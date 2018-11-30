@@ -1,5 +1,5 @@
 {
-  "name": "samsung-tv-remote",
+  "name": "samsung-tv-control",
   "version": "1.0.0",
   "description": "Remote your tv via JS!",
   "main": "index.js",

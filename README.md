@@ -4,7 +4,7 @@ Module for remote Samsung TV with your NodeJS application. Tested with Samsung U
 
 Requires Node v8 or above.
 
-`npm install samsung-tv-remote --save`
+`npm install samsung-tv-control --save`
 
 ## Usage
 
