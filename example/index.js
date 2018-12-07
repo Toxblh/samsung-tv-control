@@ -1,4 +1,4 @@
-const Samsung = require('./lib')
+const Samsung = require('../lib')
 
 const config = {
   nameApp: 'NodeJS Remote',

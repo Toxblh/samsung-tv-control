@@ -2,16 +2,22 @@
   "name": "samsung-tv-control",
   "version": "1.0.1",
   "description": "Remote your tv via JS!",
-  "main": "index.js",
+  "main": "./lib/index.js",
+  "typings": "./lib/index.d.ts",
+  "files": [
+    "lib"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prepare": "npm run build",
+    "build": "tsc",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Toxblh/samsung-tv-remote.git"
   },
   "keywords": [
-    "SamsungTV",
+    "TV",
     "SamsungTV",
     "2018",
     "Samsung",
@@ -27,5 +33,22 @@
   "dependencies": {
     "request": "^2.88.0",
     "ws": "^6.1.2"
+  },
+  "devDependencies": {
+    "@types/node": "^10.12.12",
+    "@types/jest": "^23.3.10",
+    "jest": "^23.6.0",
+    "ts-jest": "^23.10.5",
+    "typescript": "^3.2.2"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "moduleFileExtensions": [
+      "ts",
+      "js"
+    ],
+    "testRegex": "^.+\\.spec\\.ts$"
   }
 }
