@@ -1,4 +1,5 @@
-const Samsung = require('../lib')
+const Samsung = require('samsung-tv-control')
+const { KEYS } = require('samsung-tv-control/lib/keys')
 
 const config = {
   nameApp: 'NodeJS Remote',
@@ -8,7 +9,7 @@ const config = {
 const control = Samsung(config)
 
 control.isAvaliable()
-control.sendKey('KEY_VOLUP', function(err, res) {
+control.sendKey(KEYS.KEY_POWER, function(err, res) {
   if (err) {
     throw new Error(err)
   } else {
