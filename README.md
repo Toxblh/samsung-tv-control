@@ -1,4 +1,9 @@
-Module for remote Samsung TV with your NodeJS application. Tested with Samsung UE43NU7400
+### Module for remote Samsung TV with your NodeJS application. 
+*Tested with Samsung UE43NU7400*
+
+[![Latest Stable Version](https://img.shields.io/npm/v/samsung-tv-control.svg)](https://www.npmjs.com/package/samsung-tv-control)
+[![License](https://img.shields.io/npm/l/samsung-tv-control.svg)](https://www.npmjs.com/package/samsung-tv-control)
+[![NPM Downloads](https://img.shields.io/npm/dt/samsung-tv-control.svg)](https://www.npmjs.com/package/samsung-tv-control)
 
 ## Installation
 
