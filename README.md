@@ -14,7 +14,7 @@ Requires Node v8 or above.
 ## Usage
 
 ```js
-const Samsung = require('./lib')
+const Samsung = require('samsung-tv-control')
 
 const config = {
   nameApp: 'NodeJS Remote',
