@@ -35,11 +35,11 @@ class Samsung {
     )
   }
 
-  public sendKey(key: KEYS | KEYS[], done?: () => void) {
+  public sendKey(key: KEYS, done?: () => void) {
     const wsUrl = `wss://${this.IP}:${
       this.PORT
-    }/api/v2/channels/samsung.remote.control?name=${this.NAME_APP}=&token=${
-      this.TOKEN
+    }/api/v2/channels/samsung.remote.control?name=${this.NAME_APP}${
+      this.TOKEN !== '' ? ` &token=${this.TOKEN}` : ''
     }`
     const ws = new WebSocket(wsUrl, { rejectUnauthorized: false })
 
@@ -47,28 +47,10 @@ class Samsung {
     ws.on('message', async (message: string) => {
       const data: any = JSON.parse(message)
       if (data.event === 'ms.channel.connect') {
-        console.log('message', data)
-        console.log('kio', key instanceof Array)
+        console.info('message', JSON.stringify(data, null, 2))
 
-        function promiseSend(cmd: string) {
-          return new Promise((resolve, rej) => {
-            ws.send(cmd, (err?: Error, res?: object) => {
-              if (err) {
-                rej(err)
-              } else {
-                console.log(res)
-                resolve(res)
-              }
-            })
-          })
-        }
-
-        if (key instanceof Array) {
-          key.forEach((item) => ws.send(this.getCommandByKey(item), done))
-        } else {
-          ws.send(this.getCommandByKey(key), done)
-        }
-        // ws.close()
+        ws.send(this.getCommandByKey(key), done)
+        ws.close()
       }
     })
 
@@ -92,7 +74,7 @@ class Samsung {
         { url: `http://${this.IP}:8001/api/v2/`, timeout: 3000 },
         (err: any, res: { statusCode: number }) => {
           if (!err && res.statusCode === 200) {
-            console.log('TV is avaliable')
+            console.info('TV is avaliable')
             resolve('TV is avaliable')
           } else {
             console.error('No response from TV')
@@ -117,7 +99,7 @@ class Samsung {
     })
   }
 
-  private getCommandByKey(key: string): string {
+  private getCommandByKey(key: KEYS): string {
     return JSON.stringify({
       method: 'ms.remote.control',
       params: {

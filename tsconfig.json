@@ -8,8 +8,8 @@
     "strict": true,
     "sourceMap": true,
     "noImplicitAny": true,
-    "strictNullChecks": true
-    // "removeComments": true,
+    "strictNullChecks": true,
+    "removeComments": true,
   },
   "include": [
     "src/**/*"
