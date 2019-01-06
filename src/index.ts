@@ -1,85 +1,115 @@
-import { KEYS } from "./keys";
+import * as request from 'request'
+import * as wol from 'wake_on_lan'
+import * as WebSocket from 'ws'
+import { KEYS } from './keys'
 
-const WebSocket = require("ws");
-const request = require("request");
+export interface Configuration {
+  ip: string
+  mac: string
+  token?: string
+  nameApp?: string
+}
 
-export type Configuration = {
-  ip: string;
-  nameApp?: string;
-};
+class Samsung {
+  private IP: string
+  private MAC: string
+  private PORT: string
+  private TOKEN: string
+  private NAME_APP: string
 
-module.exports = function(config: Configuration) {
-  if (!config.ip) {
-    throw new Error("You must provide IP in config");
+  constructor(config: Configuration) {
+    if (!config.ip) {
+      throw new Error('You must provide IP in config')
+    }
+
+    if (!config.mac) {
+      throw new Error('You must provide MAC in config')
+    }
+
+    this.IP = config.ip
+    this.MAC = config.mac
+    this.PORT = '8002'
+    this.TOKEN = config.token || ''
+    this.NAME_APP = Buffer.from(config.nameApp || 'NodeJS Remote').toString(
+      'base64',
+    )
   }
 
-  const IP = config.ip;
-  const PORT = "8002";
-  const NAME_APP = Buffer.from(config.nameApp || "NodeJS Remote").toString(
-    "base64"
-  );
+  public sendKey(key: KEYS, done?: () => void) {
+    const wsUrl = `wss://${this.IP}:${
+      this.PORT
+    }/api/v2/channels/samsung.remote.control?name=${this.NAME_APP}${
+      this.TOKEN !== '' ? ` &token=${this.TOKEN}` : ''
+    }`
+    const ws = new WebSocket(wsUrl, { rejectUnauthorized: false })
 
-  return {
-    sendKey: function(key: KEYS, done?: () => void) {
-      var ws = new WebSocket(
-        `wss://${IP}:${PORT}/api/v2/channels/samsung.remote.control?name=${NAME_APP}=&token=10985883`,
-        { rejectUnauthorized: false }
-      );
+    // Here get token
+    ws.on('message', async (message: string) => {
+      const data: any = JSON.parse(message)
+      if (data.event === 'ms.channel.connect') {
+        console.info('message', JSON.stringify(data, null, 2))
 
-      ws.on("message", function(message: string) {
-        var cmd = {
-          method: "ms.remote.control",
-          params: {
-            Cmd: "Click",
-            DataOfCmd: key,
-            Option: "false",
-            TypeOfRemote: "SendRemoteKey"
-          }
-        };
+        ws.send(this.getCommandByKey(key), done)
+        ws.close()
+      }
+    })
 
-        // TODO: change to correct type
-        const data: any = JSON.parse(message);
-        if (data.event === "ms.channel.connect") {
-          ws.send(JSON.stringify(cmd));
-          ws.close();
-        }
-      });
+    ws.on('response', (response: WebSocket.Data) => {
+      console.log('response', response)
+    })
 
-      // TODO: change to correct type
-      ws.on("response", function(response: any) {
-        console.log(response);
-        done && done();
-      });
+    // TODO: change to correct type
+    ws.on('error', (err: any) => {
+      let errorMsg = ''
+      if (err.code === 'EHOSTUNREACH' || err.code === 'ECONNREFUSED') {
+        errorMsg = 'TV is off or unavalible'
+      }
+      console.error('error', errorMsg, err)
+    })
+  }
 
-      // TODO: change to correct type
-      ws.on("error", function(err: any) {
-        let errorMsg = "";
-        if (err.code === "EHOSTUNREACH" || err.code === "ECONNREFUSED") {
-          errorMsg = "TV is off or unavalible";
-        }
-        console.error(errorMsg, err);
-      });
-    },
-
-    isAvaliable: function() {
+  public isAvaliable(): Promise<string> {
+    return new Promise((resolve, reject) => {
       request.get(
-        { url: `http://${config.ip}:8001/api/v2/`, timeout: 3000 },
-        function(err: any, res: { statusCode: number }) {
+        { url: `http://${this.IP}:8001/api/v2/`, timeout: 3000 },
+        (err: any, res: { statusCode: number }) => {
           if (!err && res.statusCode === 200) {
-            console.info("TV is avaliable");
-            return true;
+            console.info('TV is avaliable')
+            resolve('TV is avaliable')
           } else {
-            console.error("No response from TV");
-            return false;
+            console.error('No response from TV')
+            reject('No response from TV')
           }
+        },
+      )
+    })
+  }
+
+  public turnOn(): Promise<string> {
+    return new Promise((resolve, reject) => {
+      wol.wake(this.MAC, (err) => {
+        if (err) {
+          console.error('Fail turn on')
+          reject('Fail turn on')
+        } else {
+          console.log('TV is avaliable')
+          resolve('TV is avaliable')
         }
-      );
-    }
-    /**
-    turnOn: () => {
-      // WakeOnLan
-      // Try to send powerButton
-    }
-     */
-  };
-};
+      })
+    })
+  }
+
+  private getCommandByKey(key: KEYS): string {
+    return JSON.stringify({
+      method: 'ms.remote.control',
+      params: {
+        Cmd: 'Click',
+        DataOfCmd: key,
+        Option: 'false',
+        TypeOfRemote: 'SendRemoteKey',
+      },
+    })
+  }
+}
+
+export default Samsung
