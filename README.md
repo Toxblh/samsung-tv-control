@@ -14,7 +14,7 @@ Requires Node v9 or above.
 ## Usage
 
 ```js
-const Samsung = require('samsung-tv-control')
+const Samsung = require('samsung-tv-control').default
 const { KEYS } = require('samsung-tv-control/lib/keys')
 
 const config = {
