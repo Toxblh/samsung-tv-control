@@ -49,7 +49,7 @@ class Samsung {
       if (data.event === 'ms.channel.connect') {
         console.info('message', JSON.stringify(data, null, 2))
 
-        ws.send(this.getCommandByKey(key), done)
+        ws.send(this._getCommandByKey(key), done)
         ws.close()
       }
     })
@@ -66,6 +66,49 @@ class Samsung {
       }
       console.error('error', errorMsg, err)
     })
+  }
+
+  public getAppsFromTV(done?: () => void) {
+    return this._send(
+      {
+        method: 'ms.channel.emit',
+        params: {
+          data: '',
+          to: 'host',
+          event: 'ed.installedApp.get',
+        },
+      },
+      done,
+    )
+  }
+
+  public async openApp(appId: string, done?: () => void) {
+    // this.getAppsFromTV()
+
+    // // Find app
+    // const app = this.apps.find((element) => element.appId == appId)
+
+    // if (!app) {
+    //   return reject('App with this ID is not installed!')
+    // }
+
+    // // Debug
+    // this.device.debug(`Open application ${app.name}`)
+
+    return this._send(
+      {
+        method: 'ms.channel.emit',
+        params: {
+          to: 'host',
+          event: 'ed.apps.launch',
+          data: {
+            action_type: 'NATIVE_LAUNCH', // app.app_type === 2 ? 'DEEP_LINK' : 'NATIVE_LAUNCH',
+            appId,
+          },
+        },
+      },
+      done,
+    )
   }
 
   public isAvaliable(): Promise<string> {
@@ -99,7 +142,35 @@ class Samsung {
     })
   }
 
-  private getCommandByKey(key: KEYS): string {
+  private _send(command: object, done?: () => void) {
+    const wsUrl = `wss://${this.IP}:${
+      this.PORT
+    }/api/v2/channels/samsung.remote.control?name=${this.NAME_APP}${
+      this.TOKEN !== '' ? ` &token=${this.TOKEN}` : ''
+    }`
+    const ws = new WebSocket(wsUrl, { rejectUnauthorized: false })
+
+    // Here get token
+    ws.on('message', async (message: string) => {
+      ws.send(command, done)
+      ws.close()
+    })
+
+    ws.on('response', (response: WebSocket.Data) => {
+      console.log('response', response)
+    })
+
+    // TODO: change to correct type
+    ws.on('error', (err: any) => {
+      let errorMsg = ''
+      if (err.code === 'EHOSTUNREACH' || err.code === 'ECONNREFUSED') {
+        errorMsg = 'TV is off or unavalible'
+      }
+      console.error('error', errorMsg, err)
+    })
+  }
+
+  private _getCommandByKey(key: KEYS): string {
     return JSON.stringify({
       method: 'ms.remote.control',
       params: {
