@@ -49,7 +49,11 @@ class Samsung {
       if (data.event === 'ms.channel.connect') {
         console.info('message', JSON.stringify(data, null, 2))
 
-        ws.send(this.getCommandByKey(key), done)
+        ws.send(this.getCommandByKey(key), (err) => {
+          if (done) {
+            done(err, data)
+          }
+        })
         ws.close()
       }
     })
