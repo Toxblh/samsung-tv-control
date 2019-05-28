@@ -11,13 +11,19 @@ const config = {
 const control = new Samsung(config)
 
 control.turnOn()
-control.isAvaliable().then(() => {
-  control.sendKey(KEYS.KEY_HOME, function(err, res) {
-    if (err) {
-      throw new Error(err)
-    } else {
-      console.log(res)
-    }
-  })
-}).catch(e => console.error(e))
+control
+  .isAvaliable()
+  .then(() => {
+    control.getToken(res => {
+      console.info('TOKEN:', res)
+    })
 
+    control.sendKey(KEYS.KEY_HOME, function(err, res) {
+      if (err) {
+        throw new Error(err)
+      } else {
+        console.log(res)
+      }
+    })
+  })
+  .catch(e => console.error(e))

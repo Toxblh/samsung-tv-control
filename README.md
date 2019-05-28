@@ -1,5 +1,6 @@
 ### Library for remote control Samsung TV in your NodeJS application.
-*Tested with Samsung UE43NU7400*
+
+_Tested with Samsung UE43NU7400_
 
 [![Latest Stable Version](https://img.shields.io/npm/v/samsung-tv-control.svg)](https://www.npmjs.com/package/samsung-tv-control)
 [![License](https://img.shields.io/npm/l/samsung-tv-control.svg)](https://www.npmjs.com/package/samsung-tv-control)
@@ -27,16 +28,22 @@ const config = {
 const control = new Samsung(config)
 
 control.turnOn()
-control.isAvaliable().then(() => {
-  control.sendKey(KEYS.KEY_HOME, function(err, res) {
-    if (err) {
-      throw new Error(err)
-    } else {
-      console.log(res)
-    }
-  })
-}).catch(e => console.error(e))
+control
+  .isAvaliable()
+  .then(() => {
+    control.getToken(res => {
+      console.info('TOKEN:', res)
+    })
 
+    control.sendKey(KEYS.KEY_HOME, function(err, res) {
+      if (err) {
+        throw new Error(err)
+      } else {
+        console.log(res)
+      }
+    })
+  })
+  .catch(e => console.error(e))
 ```
 
 ## Commands List
