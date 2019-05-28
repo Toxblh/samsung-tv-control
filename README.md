@@ -19,6 +19,7 @@ You can try [example code](example/index.js)
 ```js
 const Samsung = require('samsung-tv-control').default
 const { KEYS } = require('samsung-tv-control/lib/keys')
+const { APPS } = require('samsung-tv-control/lib/apps')
 
 const config = {
   name: 'NodeJS-Test', // Default: NodeJS
