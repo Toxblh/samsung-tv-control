@@ -30,17 +30,24 @@ class Samsung {
     this.MAC = config.mac
     this.PORT = '8002'
     this.TOKEN = config.token || ''
-    this.NAME_APP = Buffer.from(config.nameApp || 'NodeJS Remote').toString(
-      'base64',
-    )
+    this.NAME_APP = Buffer.from(config.nameApp || 'NodeJS Remote').toString('base64')
   }
 
-  public sendKey(key: KEYS, done?: () => void) {
-    const wsUrl = `wss://${this.IP}:${
-      this.PORT
-    }/api/v2/channels/samsung.remote.control?name=${this.NAME_APP}${
-      this.TOKEN !== '' ? ` &token=${this.TOKEN}` : ''
-    }`
+  public getToken(done: (token: number | null) => void) {
+    this.sendKey(KEYS.KEY_HOME, (err, res) => {
+      if (err) {
+        throw new Error(err)
+      } else {
+        const token = (res && res.data && res.data.token && res.data.token) || null
+        done(token)
+      }
+    })
+  }
+
+  public sendKey(key: KEYS, done?: (err?: any, res?: any) => void) {
+    const wsUrl = `wss://${this.IP}:${this.PORT}/api/v2/channels/samsung.remote.control?name=${
+      this.NAME_APP
+    }${this.TOKEN !== '' ? ` &token=${this.TOKEN}` : ''}`
     const ws = new WebSocket(wsUrl, { rejectUnauthorized: false })
 
     // Here get token
