@@ -4,10 +4,37 @@ import * as WebSocket from 'ws'
 import { KEYS } from './keys'
 
 export interface Configuration {
+  /** IP addess TV */
   ip: string
+  /** MAC addess TV */
   mac: string
+  /** Provide token for suppress notifications about access */
   token?: string
+  /** Will show in notification how ask remote access. Default: NodeJS */
   nameApp?: string
+  /** Verbose Mode */
+  debug?: boolean
+}
+
+interface App {
+  appId: string
+  app_type: number
+  icon: string
+  is_lock: number
+  name: string
+}
+
+interface Command {
+  method: string
+  params: {
+    Cmd?: string
+    DataOfCmd?: string
+    Option?: string
+    TypeOfRemote?: string
+    data?: string | object
+    event?: string
+    to?: string,
+  }
 }
 
 class Samsung {
@@ -16,6 +43,7 @@ class Samsung {
   private PORT: string
   private TOKEN: string
   private NAME_APP: string
+  private DEBUG: boolean
 
   constructor(config: Configuration) {
     if (!config.ip) {
@@ -31,6 +59,7 @@ class Samsung {
     this.PORT = '8002'
     this.TOKEN = config.token || ''
     this.NAME_APP = Buffer.from(config.nameApp || 'NodeJS Remote').toString('base64')
+    this.DEBUG = config.debug || false
   }
 
   public getToken(done: (token: number | null) => void) {
@@ -45,81 +74,50 @@ class Samsung {
   }
 
   public sendKey(key: KEYS, done?: (err?: any, res?: any) => void) {
-    const wsUrl = `wss://${this.IP}:${this.PORT}/api/v2/channels/samsung.remote.control?name=${
-      this.NAME_APP
-    }${this.TOKEN !== '' ? ` &token=${this.TOKEN}` : ''}`
-    const ws = new WebSocket(wsUrl, { rejectUnauthorized: false })
-
-    // Here get token
-    ws.on('message', async (message: string) => {
-      const data: any = JSON.parse(message)
-      if (data.event === 'ms.channel.connect') {
-        console.info('message', JSON.stringify(data, null, 2))
-
-        ws.send(this._getCommandByKey(key), (err) => {
-          if (done) {
-            done(err, data)
-          }
-        })
-        ws.close()
-      }
-    })
-
-    ws.on('response', (response: WebSocket.Data) => {
-      console.log('response', response)
-    })
-
-    // TODO: change to correct type
-    ws.on('error', (err: any) => {
-      let errorMsg = ''
-      if (err.code === 'EHOSTUNREACH' || err.code === 'ECONNREFUSED') {
-        errorMsg = 'TV is off or unavalible'
-      }
-      console.error('error', errorMsg, err)
-    })
+    this._send(this._getCommandByKey(key), done, 'ms.channel.connect')
   }
 
-  public getAppsFromTV(done?: () => void) {
+  public getAppsFromTV(done?: (err?: any, res?: any) => void) {
     return this._send(
       {
         method: 'ms.channel.emit',
         params: {
           data: '',
-          to: 'host',
           event: 'ed.installedApp.get',
+          to: 'host',
         },
       },
       done,
     )
   }
 
-  public async openApp(appId: string, done?: () => void) {
-    // this.getAppsFromTV()
+  public openApp(appId: string, done?: (err?: any, res?: any) => void) {
+    this.getAppsFromTV((err, res) => {
+      if (err || res.data.data === undefined) {
+        return false
+      }
+      const apps: App[] = res.data.data
+      const app = apps.find((appIter) => appIter.appId === appId)
 
-    // // Find app
-    // const app = this.apps.find((element) => element.appId == appId)
+      if (!app) {
+        throw new Error('This APP is not installed')
+      }
 
-    // if (!app) {
-    //   return reject('App with this ID is not installed!')
-    // }
-
-    // // Debug
-    // this.device.debug(`Open application ${app.name}`)
-
-    return this._send(
-      {
-        method: 'ms.channel.emit',
-        params: {
-          to: 'host',
-          event: 'ed.apps.launch',
-          data: {
-            action_type: 'NATIVE_LAUNCH', // app.app_type === 2 ? 'DEEP_LINK' : 'NATIVE_LAUNCH',
-            appId,
+      this._send(
+        {
+          method: 'ms.channel.emit',
+          params: {
+            data: {
+              action_type: app.app_type === 2 ? 'DEEP_LINK' : 'NATIVE_LAUNCH',
+              appId: app.appId,
+            },
+            event: 'ed.apps.launch',
+            to: 'host',
           },
         },
-      },
-      done,
-    )
+        done,
+      )
+    })
   }
 
   public isAvaliable(): Promise<string> {
@@ -128,10 +126,14 @@ class Samsung {
         { url: `http://${this.IP}:8001/api/v2/`, timeout: 3000 },
         (err: any, res: { statusCode: number }) => {
           if (!err && res.statusCode === 200) {
-            console.info('TV is avaliable')
+            if (this.DEBUG) {
+              console.info('TV is avaliable')
+            }
             resolve('TV is avaliable')
           } else {
-            console.error('No response from TV')
+            if (this.DEBUG) {
+              console.error('No response from TV')
+            }
             reject('No response from TV')
           }
         },
@@ -143,32 +145,49 @@ class Samsung {
     return new Promise((resolve, reject) => {
       wol.wake(this.MAC, (err) => {
         if (err) {
-          console.error('Fail turn on')
+          if (this.DEBUG) {
+            console.error('Fail turn on')
+          }
           reject('Fail turn on')
         } else {
-          console.log('TV is avaliable')
+          if (this.DEBUG) {
+            console.log('TV is avaliable')
+          }
           resolve('TV is avaliable')
         }
       })
     })
   }
 
-  private _send(command: object, done?: () => void) {
-    const wsUrl = `wss://${this.IP}:${
-      this.PORT
-    }/api/v2/channels/samsung.remote.control?name=${this.NAME_APP}${
-      this.TOKEN !== '' ? ` &token=${this.TOKEN}` : ''
-    }`
+  private _send(command: Command, done?: (err?: any, res?: any) => void, eventHandle?: string) {
+    const wsUrl = `wss://${this.IP}:${this.PORT}/api/v2/channels/samsung.remote.control?name=${
+      this.NAME_APP
+    }${this.TOKEN !== '' ? ` &token=${this.TOKEN}` : ''}`
     const ws = new WebSocket(wsUrl, { rejectUnauthorized: false })
 
-    // Here get token
-    ws.on('message', async (message: string) => {
-      ws.send(command, done)
-      ws.close()
+    ws.on('open', () => {
+      ws.send(JSON.stringify(command))
+    })
+
+    ws.on('message', (message: string) => {
+      const data: any = JSON.parse(message)
+      if (this.DEBUG) {
+        console.info('message', JSON.stringify(data, null, 2))
+      }
+
+      if (done && (data.event === command.params.event || data.event === eventHandle)) {
+        done(null, data)
+      }
+
+      if (data.event !== 'ms.channel.connect') {
+        ws.close()
+      }
     })
 
     ws.on('response', (response: WebSocket.Data) => {
-      console.log('response', response)
+      if (this.DEBUG) {
+        console.log('response', response)
+      }
     })
 
     // TODO: change to correct type
@@ -181,8 +200,8 @@ class Samsung {
     })
   }
 
-  private _getCommandByKey(key: KEYS): string {
-    return JSON.stringify({
+  private _getCommandByKey(key: KEYS): Command {
+    return {
       method: 'ms.remote.control',
       params: {
         Cmd: 'Click',
@@ -190,7 +209,7 @@ class Samsung {
         Option: 'false',
         TypeOfRemote: 'SendRemoteKey',
       },
-    })
+    }
   }
 }
 
