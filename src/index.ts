@@ -190,7 +190,6 @@ class Samsung {
       }
     })
 
-    // TODO: change to correct type
     ws.on('error', (err: any) => {
       let errorMsg = ''
       if (err.code === 'EHOSTUNREACH' || err.code === 'ECONNREFUSED') {
