@@ -33,18 +33,18 @@
   "dependencies": {
     "request": "^2.88.0",
     "wake_on_lan": "^1.0.0",
-    "ws": "^6.1.2"
+    "ws": "^7.0.1"
   },
   "devDependencies": {
     "@types/request": "^2.48.1",
     "@types/wake_on_lan": "0.0.27",
     "@types/ws": "^6.0.1",
-    "@types/jest": "^23.3.10",
-    "@types/node": "^10.12.12",
-    "jest": "^23.6.0",
-    "ts-jest": "^23.10.5",
-    "tslint": "^5.11.0",
-    "typescript": "^3.2.2"
+    "@types/jest": "^24.0.15",
+    "@types/node": "^10.14.9",
+    "jest": "^24.8.0",
+    "ts-jest": "^24.0.2",
+    "tslint": "^5.17.0",
+    "typescript": "^3.5.2"
   },
   "jest": {
     "transform": {
