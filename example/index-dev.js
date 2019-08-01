@@ -3,11 +3,11 @@ const { KEYS } = require('../lib/keys')
 const { APPS } = require('../lib/apps')
 
 const config = {
-  name: 'NodeJS-Test', // Default: NodeJS
+  debug: true, // Default: false
   ip: '192.168.1.2',
   mac: '123456789ABC',
+  name: 'NodeJS-Test', // Default: NodeJS
   token: '12345678',
-  debug: true // Default: false
 }
 
 const control = new Samsung(config)

@@ -3,11 +3,12 @@ const { KEYS } = require('samsung-tv-control/lib/keys')
 const { APPS } = require('samsung-tv-control/lib/apps')
 
 const config = {
-  name: 'NodeJS-Test', // Default: NodeJS
+  debug: true, // Default: false
   ip: '192.168.1.2',
   mac: '123456789ABC',
+  name: 'NodeJS-Test', // Default: NodeJS
+  port: 8002, // Default: 8002
   token: '12345678',
-  debug: true // Default: false
 }
 
 const control = new Samsung(config)

@@ -14,6 +14,8 @@ export interface Configuration {
   nameApp?: string
   /** Verbose Mode */
   debug?: boolean
+  /** Port, for old models 8001 (Default: 8002) */
+  port?: number
 }
 
 interface App {
@@ -40,7 +42,7 @@ interface Command {
 class Samsung {
   private IP: string
   private MAC: string
-  private PORT: string
+  private PORT: number
   private TOKEN: string
   private NAME_APP: string
   private DEBUG: boolean
@@ -56,7 +58,7 @@ class Samsung {
 
     this.IP = config.ip
     this.MAC = config.mac
-    this.PORT = '8002'
+    this.PORT = config.port || 8002
     this.TOKEN = config.token || ''
     this.NAME_APP = Buffer.from(config.nameApp || 'NodeJS Remote').toString('base64')
     this.DEBUG = config.debug || false
