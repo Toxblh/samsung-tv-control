@@ -17,8 +17,6 @@ deploy:
     skip_cleanup: true
     local_dir: docs/
     github_token: $GITHUB_TOKEN
-    on:
-      tags: true
   - provider: releases
     api_key: $GITHUB_TOKEN
     file_glob: true
