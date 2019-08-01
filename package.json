@@ -10,7 +10,9 @@
   "scripts": {
     "prepare": "npm run build",
     "build": "tsc",
-    "test": "jest"
+    "test": "jest",
+    "typedoc": "typedoc",
+    "posttypedoc": "touch ./docs/.nojekyll"
   },
   "repository": {
     "type": "git",
@@ -36,14 +38,15 @@
     "ws": "^7.0.1"
   },
   "devDependencies": {
+    "@types/jest": "^24.0.15",
+    "@types/node": "^10.14.9",
     "@types/request": "^2.48.1",
     "@types/wake_on_lan": "0.0.27",
     "@types/ws": "^6.0.1",
-    "@types/jest": "^24.0.15",
-    "@types/node": "^10.14.9",
     "jest": "^24.8.0",
     "ts-jest": "^24.0.2",
     "tslint": "^5.17.0",
+    "typedoc": "^0.15.0",
     "typescript": "^3.5.2"
   },
   "jest": {
