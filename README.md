@@ -1,4 +1,4 @@
-### Library for remote control Samsung TV in your NodeJS application.
+## 📺 Library for remote control Samsung TV in your NodeJS application.
 
 _Tested with Samsung UE43NU7400_
 
