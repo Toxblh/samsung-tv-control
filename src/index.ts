@@ -162,9 +162,11 @@ class Samsung {
   }
 
   private _send(command: Command, done?: (err?: any, res?: any) => void, eventHandle?: string) {
-    const wsUrl = `wss://${this.IP}:${this.PORT}/api/v2/channels/samsung.remote.control?name=${
-      this.NAME_APP
-    }${this.TOKEN !== '' ? ` &token=${this.TOKEN}` : ''}`
+    const wsUrl = `${this.PORT === 8001 ? 'ws' : 'wss'}://${this.IP}:${
+      this.PORT
+    }/api/v2/channels/samsung.remote.control?name=${this.NAME_APP}${
+      this.TOKEN !== '' ? ` &token=${this.TOKEN}` : ''
+    }`
     const ws = new WebSocket(wsUrl, { rejectUnauthorized: false })
 
     ws.on('open', () => {
