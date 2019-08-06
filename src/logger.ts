@@ -86,24 +86,24 @@ class Logger {
     })
 
     if (funcName) {
-      cnsl(`### [${new Date().toISOString()}] ###`)
+      cnsl(`# [${new Date().toISOString()}] #`)
       cnsl('FUNCTION:', funcName)
       cnsl(type, message)
       cnsl(logData)
-      cnsl('$$$$$$')
+      cnsl('### ### ###\n')
       return
     }
 
-    cnsl(`### [${new Date().toISOString()}] ###`)
+    cnsl(`# [${new Date().toISOString()}] #`)
     cnsl(type, message)
     cnsl(logData)
-    cnsl('$$$$$$')
+    cnsl('### ### ###\n')
   }
 
   private _printLog(item: LogMessage) {
-    return `[${item.time}] ${item.type}${item.funcName ? ' "' + item.funcName + '": ' : ''}${
+    return `[${item.time}] ${item.type}${item.funcName ? ' "' + item.funcName + '": ' : ''} ${
       item.message
-    } - ${JSON.stringify(item.logData)}`
+    } - ${JSON.stringify(item.logData, null, 2)}`
   }
 }
 
