@@ -3,6 +3,7 @@
 _Tested with Samsung UE43NU7400_
 
 [![Build Status](https://travis-ci.org/Toxblh/samsung-tv-control.svg?branch=master)](https://travis-ci.org/Toxblh/samsung-tv-control)
+[![codecov](https://codecov.io/gh/Toxblh/samsung-tv-control/branch/master/graph/badge.svg)](https://codecov.io/gh/Toxblh/samsung-tv-control)
 [![Latest Stable Version](https://img.shields.io/npm/v/samsung-tv-control.svg)](https://www.npmjs.com/package/samsung-tv-control)
 [![License](https://img.shields.io/npm/l/samsung-tv-control.svg)](https://www.npmjs.com/package/samsung-tv-control)
 [![NPM Downloads](https://img.shields.io/npm/dt/samsung-tv-control.svg)](https://www.npmjs.com/package/samsung-tv-control)
