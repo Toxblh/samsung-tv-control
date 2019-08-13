@@ -12,7 +12,7 @@ script:
 after_success:
   - npm run typedoc
   - npm pack
-  - codecov
+  - codecov -f coverage/*.json
 
 deploy:
   - provider: pages
