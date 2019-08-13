@@ -7,6 +7,9 @@
   "files": [
     "lib"
   ],
+  "bin": {
+    "samsung-tv-remote": "./cli/index.js"
+  },
   "scripts": {
     "prepare": "npm run build",
     "build": "tsc",
@@ -35,6 +38,7 @@
   "homepage": "https://github.com/Toxblh/samsung-tv-remote#readme",
   "dependencies": {
     "request": "^2.88.0",
+    "vorpal": "^1.12.0",
     "wake_on_lan": "^1.0.0",
     "ws": "^7.0.1"
   },

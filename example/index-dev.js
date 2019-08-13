@@ -4,10 +4,9 @@ const { APPS } = require('../lib/apps')
 
 const config = {
   debug: true, // Default: false
-  ip: '192.168.1.2',
-  mac: '123456789ABC',
+  ip: '192.168.1.3',
+  mac: '641CA1234567',
   name: 'NodeJS-Test', // Default: NodeJS
-  token: '12345678',
 }
 
 const control = new Samsung(config)
@@ -41,5 +40,7 @@ control
         console.log('# Response openApp', res)
       }
     })
+
+    control.getLogs()
   })
   .catch(e => console.error(e))
