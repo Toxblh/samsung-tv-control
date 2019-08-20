@@ -204,6 +204,9 @@ class Samsung {
         this.LOGGER.log('if not correct event', 'ws is close', 'ws.on message')
         ws.close()
       }
+
+      // TODO, additional check on avaliable instead of ws.open
+      // if(data.event == "ms.channel.connect") { _sendCMD() }
     })
 
     ws.on('response', (response: WebSocket.Data) => {

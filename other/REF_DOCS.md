@@ -3,12 +3,14 @@ GET API and Debug
 - http://sc0ty.pl/2012/02/samsung-tv-network-remote-control-protocol/
 - http://wiki.samygo.tv/index.php?title=Samsung_TV_network_remote_control_protocol
 
+related projects
+- https://github.com/tdudek/samsung-remote-models-2014-and-newer
+
 good projects
 - https://github.com/Ape/samsungctl
 - https://github.com/Badisi/samsung-tv-remote
 - https://github.com/kyleaa/homebridge-samsungtv2016
 - https://github.com/tavicu/homebridge-samsung-tizen
-- https://github.com/tdudek/samsung-remote-models-2014-and-newer
 - https://github.com/sectroyer/SmartCrypto
 - https://github.com/shantanugoel/samsung-messagebox
 - https://github.com/eclair4151/AlexaControlledSamsungTV
