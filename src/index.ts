@@ -1,3 +1,5 @@
+import * as fs from 'fs'
+import * as path from 'path'
 import * as request from 'request'
 import * as wol from 'wake_on_lan'
 import * as WebSocket from 'ws'
@@ -17,6 +19,8 @@ export interface Configuration {
   debug?: boolean
   /** Port, for old models 8001 (Default: 8002) */
   port?: number
+  /** Autosave token (Default: false) */
+  saveToken: boolean
 }
 
 interface App {
@@ -47,6 +51,8 @@ class Samsung {
   private TOKEN: string
   private NAME_APP: string
   private LOGGER: Logger
+  private SAVE_TOKEN: boolean
+  private TOKEN_FILE = path.join(__dirname, 'token.txt')
 
   constructor(config: Configuration) {
     if (!config.ip) {
@@ -62,13 +68,44 @@ class Samsung {
     this.PORT = config.port || 8002
     this.TOKEN = config.token || ''
     this.NAME_APP = Buffer.from(config.nameApp || 'NodeJS Remote').toString('base64')
+    this.SAVE_TOKEN = config.saveToken || false
     this.LOGGER = new Logger({ DEBUG_MODE: !!config.debug })
 
     this.LOGGER.log('config', config, 'constructor')
+
+    if (this.SAVE_TOKEN) {
+      try {
+        fs.accessSync(this.TOKEN_FILE, fs.constants.F_OK)
+        console.log('File suss!')
+        const fileData = fs.readFileSync(this.TOKEN_FILE)
+        this.TOKEN = fileData.toString()
+      } catch (e) {
+        console.log('File error!')
+      }
+    }
+
+    this.LOGGER.log(
+      'internal config',
+      {
+        IP: this.IP,
+        MAC: this.MAC,
+        PORT: this.PORT,
+        TOKEN: this.TOKEN,
+        NAME_APP: this.NAME_APP,
+        SAVE_TOKEN: this.SAVE_TOKEN,
+      },
+      'constructor',
+    )
   }
 
-  public getToken(done: (token: number | null) => void) {
+  public getToken(done: (token: string | null) => void) {
     this.LOGGER.log('getToken', '')
+
+    if (this.SAVE_TOKEN && this.TOKEN !== 'null'  && this.TOKEN !== '') {
+      done(this.TOKEN)
+      return
+    }
+
     this.sendKey(KEYS.KEY_HOME, (err, res) => {
       if (err) {
         this.LOGGER.error('after sendKey', err, 'getToken')
@@ -76,6 +113,10 @@ class Samsung {
       } else {
         const token = (res && res.data && res.data.token && res.data.token) || null
         this.LOGGER.log('got token', token, 'getToken')
+        this.TOKEN = token
+        if (this.SAVE_TOKEN) {
+          this._saveTokenToFile(token)
+        }
         done(token)
       }
     })
@@ -84,14 +125,23 @@ class Samsung {
   public getTokenPromise(): Promise<string> {
     return new Promise((resolve, reject) => {
       this.LOGGER.log('getTokenPromise', '')
+
+      if (this.SAVE_TOKEN && this.TOKEN !== 'null'  && this.TOKEN !== '') {
+        resolve(this.TOKEN)
+        return
+      }
+
       this.sendKey(KEYS.KEY_HOME, (err, res) => {
         if (err) {
-          this.LOGGER.error('after sendKey', err, 'getToken')
-          reject('after sendKey getToken')
+          this.LOGGER.error('after sendKey', err, 'getTokenPromise')
+          reject('after sendKey getTokenPromise')
         } else {
           const token = (res && res.data && res.data.token && res.data.token) || null
-          this.LOGGER.log('got token', token, 'getToken')
+          this.LOGGER.log('got token', token, 'getTokenPromise')
           this.TOKEN = token
+          if (this.SAVE_TOKEN) {
+            this._saveTokenToFile(token)
+          }
           resolve(token)
         }
       })
@@ -104,7 +154,7 @@ class Samsung {
   }
 
   public sendKeyPromise(key: KEYS) {
-    this.LOGGER.log('send key', key, 'sendKey')
+    this.LOGGER.log('send key', key, 'sendKeyPromise')
     return this._sendPromise(this._getCommandByKey(key), 'ms.channel.connect')
   }
 
@@ -135,7 +185,6 @@ class Samsung {
 
   public openApp(appId: string, done?: (err?: any, res?: any) => void) {
     this.getAppsFromTV((err, res) => {
-      this.LOGGER.error('getAppsFromTV error', err, 'openApp getAppsFromTV')
       if (err || res.data.data === undefined) {
         this.LOGGER.error('getAppsFromTV error', err, 'openApp getAppsFromTV')
         return false
@@ -170,7 +219,7 @@ class Samsung {
     try {
       const res = await this.getAppsFromTVPromise()
       if (res && res.data && res.data.data === undefined) {
-        this.LOGGER.error('getAppsFromTV res.data.data is undefined', '', 'openApp getAppsFromTV')
+        this.LOGGER.error('getAppsFromTV res.data.data is undefined', '', 'openAppPromise getAppsFromTV')
         return false
       }
 
@@ -178,7 +227,7 @@ class Samsung {
       const app = apps.find((appIter) => appIter.appId === appId)
 
       if (!app) {
-        this.LOGGER.error('This APP is not installed', { appId, app }, 'openApp getAppsFromTV')
+        this.LOGGER.error('This APP is not installed', { appId, app }, 'openAppPromise getAppsFromTV')
         throw new Error('This APP is not installed')
       }
 
@@ -194,7 +243,7 @@ class Samsung {
         },
       })
     } catch (error) {
-      this.LOGGER.error('getAppsFromTV error', error, 'openApp getAppsFromTV')
+      this.LOGGER.error('getAppsFromTV error', error, 'openAppPromise getAppsFromTV')
       return false
     }
   }
@@ -246,7 +295,7 @@ class Samsung {
     const wsUrl = `${this.PORT === 8002 ? 'wss' : 'ws'}://${this.IP}:${
       this.PORT
     }/api/v2/channels/samsung.remote.control?name=${this.NAME_APP}${
-      this.TOKEN !== '' ? ` &token=${this.TOKEN}` : ''
+      this.TOKEN !== '' ? `&token=${this.TOKEN}` : ''
     }`
     const ws = new WebSocket(wsUrl, { rejectUnauthorized: false })
 
@@ -295,12 +344,12 @@ class Samsung {
       const wsUrl = `${this.PORT === 8002 ? 'wss' : 'ws'}://${this.IP}:${
         this.PORT
       }/api/v2/channels/samsung.remote.control?name=${this.NAME_APP}${
-        this.TOKEN !== '' ? ` &token=${this.TOKEN}` : ''
+        this.TOKEN !== '' ? `&token=${this.TOKEN}` : ''
       }`
       const ws = new WebSocket(wsUrl, { rejectUnauthorized: false })
 
-      this.LOGGER.log('command', command, '_send')
-      this.LOGGER.log('wsUrl', wsUrl, '_send')
+      this.LOGGER.log('command', command, '_sendPromise')
+      this.LOGGER.log('wsUrl', wsUrl, '_sendPromise')
 
       ws.on('open', () => {
         ws.send(JSON.stringify(command))
@@ -350,6 +399,17 @@ class Samsung {
         Option: 'false',
         TypeOfRemote: 'SendRemoteKey',
       },
+    }
+  }
+
+  private _saveTokenToFile(token: string) {
+    try {
+      fs.accessSync(this.TOKEN_FILE, fs.constants.F_OK)
+      console.log('File suss!')
+      fs.writeFileSync(this.TOKEN_FILE, token)
+    } catch (e) {
+      console.log('File error!')
+      fs.writeFileSync(this.TOKEN_FILE, token)
     }
   }
 }
