@@ -20,7 +20,7 @@ export interface Configuration {
   /** Port, for old models 8001 (Default: 8002) */
   port?: number
   /** Autosave token (Default: false) */
-  saveToken: boolean
+  saveToken?: boolean
 }
 
 interface App {
