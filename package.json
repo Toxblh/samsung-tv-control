@@ -12,6 +12,7 @@
     "build": "tsc",
     "test": "jest",
     "typedoc": "typedoc",
+    "typecover": "type-coverage --detail",
     "posttypedoc": "touch ./docs/.nojekyll"
   },
   "repository": {
@@ -34,6 +35,7 @@
   "homepage": "https://github.com/Toxblh/samsung-tv-remote#readme",
   "dependencies": {
     "request": "^2.88.0",
+    "type-coverage": "^2.3.0",
     "wake_on_lan": "^1.0.0",
     "ws": "^7.0.1"
   },
@@ -47,7 +49,7 @@
     "ts-jest": "^24.0.2",
     "tslint": "^5.17.0",
     "typedoc": "^0.15.0",
-    "typescript": "^3.5.2"
+    "typescript": "^3.6.4"
   },
   "jest": {
     "transform": {
@@ -58,5 +60,8 @@
       "js"
     ],
     "testRegex": "^.+\\.spec\\.ts$"
+  },
+  "typeCoverage": {
+    "atLeast": 99
   }
 }
