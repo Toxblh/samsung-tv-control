@@ -4,8 +4,8 @@ const { APPS } = require('../lib/apps')
 
 const config = {
   debug: true, // Default: false
-  ip: '192.168.1.3',
-  mac: '641CA1234567',
+  ip: '192.168.1.2',
+  mac: '123456789ABC',
   name: 'NodeJS-Test', // Default: NodeJS
 }
 
