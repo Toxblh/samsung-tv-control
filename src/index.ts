@@ -47,6 +47,7 @@ class Samsung {
   private TOKEN: string
   private NAME_APP: string
   private LOGGER: Logger
+  private WS_URL: string
 
   constructor(config: Configuration) {
     if (!config.ip) {
@@ -59,12 +60,16 @@ class Samsung {
 
     this.IP = config.ip
     this.MAC = config.mac
-    this.PORT = config.port || 8002
+    this.PORT = Number(config.port) || 8002
     this.TOKEN = config.token || ''
     this.NAME_APP = Buffer.from(config.nameApp || 'NodeJS Remote').toString('base64')
     this.LOGGER = new Logger({ DEBUG_MODE: !!config.debug })
 
     this.LOGGER.log('config', config, 'constructor')
+
+    this.WS_URL = `${this.PORT === 8001 ? 'ws' : 'wss'}://${this.IP}:${this.PORT}/api/v2/channels/samsung.remote.control?name=${
+      this.NAME_APP
+    }${this.TOKEN !== '' ? ` &token=${this.TOKEN}` : ''}`
   }
 
   public getToken(done: (token: number | null) => void) {
@@ -176,15 +181,10 @@ class Samsung {
   }
 
   private _send(command: Command, done?: (err?: any, res?: any) => void, eventHandle?: string) {
-    const wsUrl = `${this.PORT === 8002 ? 'wss' : 'ws'}://${this.IP}:${
-      this.PORT
-    }/api/v2/channels/samsung.remote.control?name=${this.NAME_APP}${
-      this.TOKEN !== '' ? ` &token=${this.TOKEN}` : ''
-    }`
-    const ws = new WebSocket(wsUrl, { rejectUnauthorized: false })
+    const ws = new WebSocket(this.WS_URL, { rejectUnauthorized: false })
 
     this.LOGGER.log('command', command, '_send')
-    this.LOGGER.log('wsUrl', wsUrl, '_send')
+    this.LOGGER.log('wsUrl', this.WS_URL, '_send')
 
     ws.on('open', () => {
       ws.send(JSON.stringify(command))
