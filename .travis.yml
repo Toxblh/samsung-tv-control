@@ -7,7 +7,6 @@ before_script:
   - npm install -g gulp-cli codecov
 
 script:
-  - npm run test
   - npm run coverage
 
 after_success:
