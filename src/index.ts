@@ -69,7 +69,7 @@ class Samsung {
 
     this.WS_URL = `${this.PORT === 8001 ? 'ws' : 'wss'}://${this.IP}:${this.PORT}/api/v2/channels/samsung.remote.control?name=${
       this.NAME_APP
-    }${this.TOKEN !== '' ? ` &token=${this.TOKEN}` : ''}`
+      }${this.TOKEN !== '' ? ` &token=${this.TOKEN}` : ''}`
   }
 
   public getToken(done: (token: number | null) => void) {
@@ -145,7 +145,7 @@ class Samsung {
           if (!err && res.statusCode === 200) {
             this.LOGGER.log(
               'TV is avaliable',
-              { request: res.request,  body: res.body, code: res.statusCode },
+              { request: res.request, body: res.body, code: res.statusCode },
               'isAvaliable',
             )
             resolve('TV is avaliable')
@@ -187,7 +187,13 @@ class Samsung {
     this.LOGGER.log('wsUrl', this.WS_URL, '_send')
 
     ws.on('open', () => {
-      ws.send(JSON.stringify(command))
+      if (this.PORT === 8001) {
+        setTimeout(() =>
+          ws.send(JSON.stringify(command))
+          , 1000)
+      } else {
+        ws.send(JSON.stringify(command))
+      }
     })
 
     ws.on('message', (message: string) => {
