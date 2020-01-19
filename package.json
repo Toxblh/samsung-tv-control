@@ -14,6 +14,7 @@
     "prepare": "npm run build",
     "build": "tsc",
     "test": "jest",
+    "posttest": "rm log-*",
     "coverage": "jest --coverage",
     "typedoc": "typedoc",
     "typecover": "type-coverage --detail",
