@@ -4,19 +4,22 @@ node_js:
 
 before_script:
   - npm install
+  - npm install -g gulp-cli codecov
 
 script:
-  - npm run test
+  - npm run coverage
 
 after_success:
   - npm run typedoc
   - npm pack
+  - codecov -f coverage/*.json
 
 deploy:
   - provider: pages
     skip_cleanup: true
     local_dir: docs/
     github_token: $GITHUB_TOKEN
+
   - provider: releases
     api_key: $GITHUB_TOKEN
     file_glob: true
@@ -24,6 +27,7 @@ deploy:
     skip_cleanup: true
     on:
       tags: true
+
   - provider: npm
     skip_cleanup: true
     email: "toxblh@gmail.com"

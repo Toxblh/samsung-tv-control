@@ -20,12 +20,13 @@ describe('Tests 8001', () => {
   })
 
   it('Check initial params', () => {
+    console.log(control)
     expect(control).toHaveProperty('IP', config.ip)
     expect(control).toHaveProperty('MAC', config.mac)
     expect(control).toHaveProperty('PORT', config.port)
     expect(control).toHaveProperty('TOKEN', config.token)
     expect(control).toHaveProperty('NAME_APP', 'Tm9kZUpTIFJlbW90ZQ==')
-    expect(control).toHaveProperty('DEBUG', config.debug)
+    expect(control).toHaveProperty('LOGGER.DEBUG', config.debug)
     expect(control).toHaveProperty('WS_URL', 'ws://192.168.1.2:8001/api/v2/channels/samsung.remote.control?name=Tm9kZUpTIFJlbW90ZQ== &token=12345678')
   })
 })
@@ -51,7 +52,7 @@ describe('Minimal config', () => {
     expect(control).toHaveProperty('PORT', 8002)
     expect(control).toHaveProperty('TOKEN', '')
     expect(control).toHaveProperty('NAME_APP', 'Tm9kZUpTIFJlbW90ZQ==')
-    expect(control).toHaveProperty('DEBUG', false)
+    expect(control).toHaveProperty('LOGGER.DEBUG', false)
     expect(control).toHaveProperty('WS_URL', 'wss://192.168.1.2:8002/api/v2/channels/samsung.remote.control?name=Tm9kZUpTIFJlbW90ZQ==')
   })
 })

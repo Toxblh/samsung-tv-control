@@ -2,6 +2,7 @@ import * as request from 'request'
 import * as wol from 'wake_on_lan'
 import * as WebSocket from 'ws'
 import { KEYS } from './keys'
+import Logger from './logger'
 
 export interface Configuration {
   /** IP addess TV */
@@ -45,7 +46,7 @@ class Samsung {
   private PORT: number
   private TOKEN: string
   private NAME_APP: string
-  private DEBUG: boolean
+  private LOGGER: Logger
   private WS_URL: string
 
   constructor(config: Configuration) {
@@ -62,7 +63,9 @@ class Samsung {
     this.PORT = Number(config.port) || 8002
     this.TOKEN = config.token || ''
     this.NAME_APP = Buffer.from(config.nameApp || 'NodeJS Remote').toString('base64')
-    this.DEBUG = config.debug || false
+    this.LOGGER = new Logger({ DEBUG_MODE: !!config.debug })
+
+    this.LOGGER.log('config', config, 'constructor')
 
     this.WS_URL = `${this.PORT === 8001 ? 'ws' : 'wss'}://${this.IP}:${this.PORT}/api/v2/channels/samsung.remote.control?name=${
       this.NAME_APP
@@ -70,17 +73,21 @@ class Samsung {
   }
 
   public getToken(done: (token: number | null) => void) {
+    this.LOGGER.log('getToken', '')
     this.sendKey(KEYS.KEY_HOME, (err, res) => {
       if (err) {
+        this.LOGGER.error('after sendKey', err, 'getToken')
         throw new Error(err)
       } else {
         const token = (res && res.data && res.data.token && res.data.token) || null
+        this.LOGGER.log('got token', token, 'getToken')
         done(token)
       }
     })
   }
 
   public sendKey(key: KEYS, done?: (err?: any, res?: any) => void) {
+    this.LOGGER.log('send key', key, 'sendKey')
     this._send(this._getCommandByKey(key), done, 'ms.channel.connect')
   }
 
@@ -100,13 +107,16 @@ class Samsung {
 
   public openApp(appId: string, done?: (err?: any, res?: any) => void) {
     this.getAppsFromTV((err, res) => {
+      this.LOGGER.error('getAppsFromTV error', err, 'openApp getAppsFromTV')
       if (err || res.data.data === undefined) {
         return false
       }
+
       const apps: App[] = res.data.data
       const app = apps.find((appIter) => appIter.appId === appId)
 
       if (!app) {
+        this.LOGGER.error('This APP is not installed', { appId, app }, 'openApp getAppsFromTV')
         throw new Error('This APP is not installed')
       }
 
@@ -131,16 +141,20 @@ class Samsung {
     return new Promise((resolve, reject) => {
       request.get(
         { url: `http://${this.IP}:8001/api/v2/`, timeout: 3000 },
-        (err: any, res: { statusCode: number }) => {
+        (err: any, res: { statusCode: number; body: object; request: object }) => {
           if (!err && res.statusCode === 200) {
-            if (this.DEBUG) {
-              console.info('TV is avaliable')
-            }
+            this.LOGGER.log(
+              'TV is avaliable',
+              { request: res.request,  body: res.body, code: res.statusCode },
+              'isAvaliable',
+            )
             resolve('TV is avaliable')
           } else {
-            if (this.DEBUG) {
-              console.error('No response from TV')
-            }
+            this.LOGGER.error(
+              'TV is avaliable',
+              { request: res.request,  body: res.body, code: res.statusCode },
+              'isAvaliable',
+            )
             reject('No response from TV')
           }
         },
@@ -152,22 +166,25 @@ class Samsung {
     return new Promise((resolve, reject) => {
       wol.wake(this.MAC, (err) => {
         if (err) {
-          if (this.DEBUG) {
-            console.error('Fail turn on')
-          }
+          this.LOGGER.error('Fail turn on', err, 'turnOn')
           reject('Fail turn on')
         } else {
-          if (this.DEBUG) {
-            console.log('TV is avaliable')
-          }
+          this.LOGGER.log('WOL sent command to TV', '', 'turnOn')
           resolve('TV is avaliable')
         }
       })
     })
   }
 
+  public getLogs() {
+    this.LOGGER.saveLogToFile()
+  }
+
   private _send(command: Command, done?: (err?: any, res?: any) => void, eventHandle?: string) {
     const ws = new WebSocket(this.WS_URL, { rejectUnauthorized: false })
+
+    this.LOGGER.log('command', command, '_send')
+    this.LOGGER.log('wsUrl', this.WS_URL, '_send')
 
     ws.on('open', () => {
       ws.send(JSON.stringify(command))
@@ -175,23 +192,22 @@ class Samsung {
 
     ws.on('message', (message: string) => {
       const data: any = JSON.parse(message)
-      if (this.DEBUG) {
-        console.info('message', JSON.stringify(data, null, 2))
-      }
+
+      this.LOGGER.log('data: ', JSON.stringify(data, null, 2), 'ws.on message')
 
       if (done && (data.event === command.params.event || data.event === eventHandle)) {
+        this.LOGGER.log('if correct event', 'callback triggered', 'ws.on message')
         done(null, data)
       }
 
       if (data.event !== 'ms.channel.connect') {
+        this.LOGGER.log('if not correct event', 'ws is close', 'ws.on message')
         ws.close()
       }
     })
 
     ws.on('response', (response: WebSocket.Data) => {
-      if (this.DEBUG) {
-        console.log('response', response)
-      }
+      this.LOGGER.log('response', response, 'ws.on response')
     })
 
     ws.on('error', (err: any) => {
@@ -199,7 +215,8 @@ class Samsung {
       if (err.code === 'EHOSTUNREACH' || err.code === 'ECONNREFUSED') {
         errorMsg = 'TV is off or unavalible'
       }
-      console.error('error', errorMsg, err)
+      console.error(errorMsg)
+      this.LOGGER.error(errorMsg, err, 'ws.on error')
     })
   }
 
