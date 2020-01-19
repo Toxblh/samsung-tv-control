@@ -20,7 +20,6 @@ describe('Tests 8001', () => {
   })
 
   it('Check initial params', () => {
-    console.log(control)
     expect(control).toHaveProperty('IP', config.ip)
     expect(control).toHaveProperty('MAC', config.mac)
     expect(control).toHaveProperty('PORT', config.port)
