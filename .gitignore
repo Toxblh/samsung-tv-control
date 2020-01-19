@@ -5,3 +5,4 @@ test
 coverage
 samsung-tv-control-*.tgz
 log*.txt
+yarn-error*

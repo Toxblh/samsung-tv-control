@@ -53,6 +53,7 @@ class Samsung {
   private LOGGER: Logger
   private SAVE_TOKEN: boolean
   private TOKEN_FILE = path.join(__dirname, 'token.txt')
+  private WS_URL: string
 
   constructor(config: Configuration) {
     if (!config.ip) {
@@ -65,13 +66,17 @@ class Samsung {
 
     this.IP = config.ip
     this.MAC = config.mac
-    this.PORT = config.port || 8002
+    this.PORT = Number(config.port) || 8002
     this.TOKEN = config.token || ''
     this.NAME_APP = Buffer.from(config.nameApp || 'NodeJS Remote').toString('base64')
     this.SAVE_TOKEN = config.saveToken || false
     this.LOGGER = new Logger({ DEBUG_MODE: !!config.debug })
 
     this.LOGGER.log('config', config, 'constructor')
+
+    this.WS_URL = `${this.PORT === 8001 ? 'ws' : 'wss'}://${this.IP}:${this.PORT}/api/v2/channels/samsung.remote.control?name=${
+      this.NAME_APP
+    }${this.TOKEN !== '' ? ` &token=${this.TOKEN}` : ''}`
 
     if (this.SAVE_TOKEN) {
       try {
@@ -93,6 +98,7 @@ class Samsung {
         TOKEN: this.TOKEN,
         NAME_APP: this.NAME_APP,
         SAVE_TOKEN: this.SAVE_TOKEN,
+        WS_URL: this.WS_URL,
       },
       'constructor',
     )
@@ -185,6 +191,7 @@ class Samsung {
 
   public openApp(appId: string, done?: (err?: any, res?: any) => void) {
     this.getAppsFromTV((err, res) => {
+      this.LOGGER.error('getAppsFromTV error', err, 'openApp getAppsFromTV')
       if (err || res.data.data === undefined) {
         this.LOGGER.error('getAppsFromTV error', err, 'openApp getAppsFromTV')
         return false
@@ -292,15 +299,10 @@ class Samsung {
   }
 
   private _send(command: Command, done?: (err?: any, res?: any) => void, eventHandle?: string) {
-    const wsUrl = `${this.PORT === 8002 ? 'wss' : 'ws'}://${this.IP}:${
-      this.PORT
-    }/api/v2/channels/samsung.remote.control?name=${this.NAME_APP}${
-      this.TOKEN !== '' ? `&token=${this.TOKEN}` : ''
-    }`
-    const ws = new WebSocket(wsUrl, { rejectUnauthorized: false })
+    const ws = new WebSocket(this.WS_URL, { rejectUnauthorized: false })
 
     this.LOGGER.log('command', command, '_send')
-    this.LOGGER.log('wsUrl', wsUrl, '_send')
+    this.LOGGER.log('wsUrl', this.WS_URL, '_send')
 
     ws.on('open', () => {
       ws.send(JSON.stringify(command))
