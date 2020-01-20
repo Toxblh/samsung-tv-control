@@ -18,6 +18,10 @@ Requires Node v9 or above.
 
 `npm install samsung-tv-control --save`
 
+## <img src="http://nodered.org/node-red-icon.png" height="32px" /> NODE-RED
+
+Also you can use the lib in your Node-RED https://github.com/Toxblh/node-red-contrib-samsung-tv-control
+
 ## Usage
 
 You can try [example code](example/index.js)

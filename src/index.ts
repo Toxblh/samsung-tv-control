@@ -259,7 +259,7 @@ class Samsung {
     return new Promise((resolve, reject) => {
       request.get(
         { url: `http://${this.IP}:8001/api/v2/`, timeout: 3000 },
-        (err: any, res: { statusCode: number; body: object; request: object }) => {
+        (err: any, res: request.RequestResponse) => {
           if (!err && res.statusCode === 200) {
             this.LOGGER.log(
               'TV is avaliable',
@@ -270,7 +270,7 @@ class Samsung {
           } else {
             this.LOGGER.error(
               'TV is avaliable',
-              { request: res.request, body: res.body, code: res.statusCode },
+              { err },
               'isAvaliable',
             )
             reject('No response from TV')
@@ -305,7 +305,13 @@ class Samsung {
     this.LOGGER.log('wsUrl', this.WS_URL, '_send')
 
     ws.on('open', () => {
-      ws.send(JSON.stringify(command))
+      if (this.PORT === 8001) {
+        setTimeout(() =>
+          ws.send(JSON.stringify(command))
+          , 1000)
+      } else {
+        ws.send(JSON.stringify(command))
+      }
     })
 
     ws.on('message', (message: string) => {
