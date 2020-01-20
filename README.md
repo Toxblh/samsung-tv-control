@@ -9,7 +9,6 @@ _Tested with Samsung UE43NU7400_
 [![devDependency Status](https://david-dm.org/Toxblh/samsung-tv-control/dev-status.svg)](https://david-dm.org/Toxblh/samsung-tv-control#info=devDependencies)
 [![Downloads total](https://img.shields.io/npm/dt/samsung-tv-control.svg)](https://www.npmjs.com/package/samsung-tv-control)
 [![Downloads month](https://img.shields.io/npm/dm/samsung-tv-control.svg)](https://www.npmjs.com/package/samsung-tv-control)
-[![type-coverage](https://img.shields.io/badge/dynamic/json.svg?label=type-coverage&prefix=%E2%89%A5&suffix=%&query=$.typeCoverage.atLeast&uri=https://github.com/Toxblh/samsung-tv-control/blob/master/package.json)](https://github.com/Toxblh/samsung-tv-control)
 [![License](https://img.shields.io/npm/l/samsung-tv-control.svg)](https://www.npmjs.com/package/samsung-tv-control)
 
 ## Installation
