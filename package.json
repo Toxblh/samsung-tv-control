@@ -64,6 +64,6 @@
     "testRegex": "^.+\\.spec\\.ts$"
   },
   "typeCoverage": {
-    "atLeast": 99
+    "atLeast": 90
   }
 }

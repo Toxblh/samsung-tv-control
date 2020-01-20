@@ -131,7 +131,7 @@ class Samsung {
         this.LOGGER.error('after sendKey', err, 'getToken')
         throw new Error(err)
       } else {
-        const token = (res && res.data && res.data.token && res.data.token) || null
+        const token: string = (res && res.data && res.data.token && res.data.token) || null
         this.LOGGER.log('got token', token, 'getToken')
         this.TOKEN = token
         if (this.SAVE_TOKEN) {
@@ -394,50 +394,6 @@ class Samsung {
         eventHandle
       )
     })
-
-    // return new Promise((resolve, reject) => {
-    //   const ws = new WebSocket(this.WS_URL, { rejectUnauthorized: false })
-
-    //   this.LOGGER.log('command', command, '_sendPromise')
-    //   this.LOGGER.log('wsUrl', this.WS_URL, '_sendPromise')
-
-    //   ws.on('open', () => {
-    //     ws.send(JSON.stringify(command))
-    //   })
-
-    //   ws.on('message', (message: string) => {
-    //     const data: any = JSON.parse(message)
-
-    //     this.LOGGER.log('data: ', JSON.stringify(data, null, 2), 'ws.on message')
-
-    //     if (data.event === command.params.event || data.event === eventHandle) {
-    //       this.LOGGER.log('if correct event', 'callback triggered', 'ws.on message')
-    //       resolve(data)
-    //     }
-
-    //     if (data.event !== 'ms.channel.connect') {
-    //       this.LOGGER.log('if not correct event', 'ws is close', 'ws.on message')
-    //       ws.close()
-    //     }
-
-    //     // TODO, additional check on avaliable instead of ws.open
-    //     // if(data.event == "ms.channel.connect") { _sendCMD() }
-    //   })
-
-    //   ws.on('response', (response: WebSocket.Data) => {
-    //     this.LOGGER.log('response', response, 'ws.on response')
-    //   })
-
-    //   ws.on('error', (err: any) => {
-    //     let errorMsg = ''
-    //     if (err.code === 'EHOSTUNREACH' || err.code === 'ECONNREFUSED') {
-    //       errorMsg = 'TV is off or unavalible'
-    //     }
-    //     console.error(errorMsg)
-    //     this.LOGGER.error(errorMsg, err, 'ws.on error')
-    //     reject(errorMsg)
-    //   })
-    // })
   }
 
   private _getCommandByKey(key: KEYS): Command {
