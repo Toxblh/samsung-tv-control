@@ -36,6 +36,7 @@
   },
   "homepage": "https://github.com/Toxblh/samsung-tv-remote#readme",
   "dependencies": {
+    "node-ssdp": "^4.0.0",
     "request": "^2.88.0",
     "type-coverage": "^2.4.0",
     "wake_on_lan": "^1.0.0",
@@ -44,6 +45,7 @@
   "devDependencies": {
     "@types/jest": "^24.9.0",
     "@types/node": "^13.1.8",
+    "@types/node-ssdp": "^3.3.0",
     "@types/request": "^2.48.4",
     "@types/wake_on_lan": "0.0.27",
     "@types/ws": "^7.2.0",
