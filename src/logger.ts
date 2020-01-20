@@ -6,7 +6,7 @@ interface LoggerConfig {
 
 interface LogMessage {
   funcName?: string
-  logData: any
+  logData: object | string
   message: string
   time: string
   type: TypeLog
@@ -14,7 +14,7 @@ interface LogMessage {
 
 enum TypeLog {
   ERROR = 'ERROR',
-  LOG = 'LOG',
+  LOG = 'LOG'
 }
 
 class Logger {
@@ -25,11 +25,11 @@ class Logger {
     this.DEBUG = config.DEBUG_MODE
   }
 
-  public log(message: string, logData: any, funcName?: string) {
+  public log(message: string, logData: object | string, funcName?: string) {
     this._addLogItem(TypeLog.LOG, message, logData, funcName)
   }
 
-  public error(message: string, logData: any, funcName?: string) {
+  public error(message: string, logData: object | string, funcName?: string) {
     this._addLogItem(TypeLog.ERROR, message, logData, funcName)
   }
 
@@ -41,7 +41,7 @@ class Logger {
       console.error('ERROR: Failed to write log file!', err)
       console.error('LOG File will be output in console!')
       console.info('----- LOG ------')
-      this.LogFile.forEach((item) => console.info(this._printLog(item)))
+      this.LogFile.forEach(item => console.info(this._printLog(item)))
       console.info('-- END OF LOG --')
     })
 
@@ -49,19 +49,19 @@ class Logger {
       console.log(`Wrote log to file "${nameOfFile}"`)
     })
 
-    this.LogFile.forEach((item) => {
+    this.LogFile.forEach(item => {
       file.write(this._printLog(item) + '\n')
     })
 
     file.end()
   }
 
-  private _addLogItem(type: TypeLog, message: string, logData: any, funcName?: string) {
+  private _addLogItem(type: TypeLog, message: string, logData: object | string, funcName?: string) {
     if (!this.DEBUG) {
       return
     }
 
-    let cnsl
+    let cnsl: Console['error'] | Console['log'] | Console['info']
 
     switch (type) {
       case TypeLog.ERROR:
@@ -82,7 +82,7 @@ class Logger {
       logData,
       message,
       time: new Date().toISOString(),
-      type,
+      type
     })
 
     if (funcName) {

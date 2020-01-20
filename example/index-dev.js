@@ -7,40 +7,25 @@ const config = {
   ip: '192.168.1.2',
   mac: '123456789ABC',
   name: 'NodeJS-Test', // Default: NodeJS
+  saveToken: true
 }
 
 const control = new Samsung(config)
 
-control.turnOn()
-control
-  .isAvaliable()
-  .then(() => {
-    // Get token for API
-    control.getToken(token => {
-      console.info('# Response getToken:', token)
-    })
+async function main() {
+  await control.turnOn()
+  await control.isAvaliable()
 
-    // Send key to TV
-    control.sendKey(KEYS.KEY_HOME, function(err, res) {
-      if (!err) {
-        console.log('# Response sendKey', res)
-      }
-    })
+  let token = await control.getTokenPromise()
+  console.log('$$ token:', token)
 
-    // Get all installed apps from TV
-    control.getAppsFromTV((err, res) => {
-      if (!err) {
-        console.log('# Response getAppsFromTV', res)
-      }
-    })
+  await control.sendKeyPromise(KEYS.KEY_HOME)
+  await control.getAppsFromTVPromise()
+  await control.openApp(APPS.Spotify)
+  // await control.openApp(APPS.YouTube)
+  await control.sendKeyPromise(KEYS.KEY_POWER)
+  await control.getLogs()
+  return
+}
 
-    // Open app by appId which you can get from getAppsFromTV
-    control.openApp(APPS.YouTube, (err, res) => {
-      if (!err) {
-        console.log('# Response openApp', res)
-      }
-    })
-
-    control.getLogs()
-  })
-  .catch(e => console.error(e))
+main()
