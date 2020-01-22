@@ -300,7 +300,7 @@ class Samsung {
 
   public isAvaliablePing(): Promise<string> {
     return new Promise((resolve, reject) => {
-      exec('ping -c 1 ' + this.IP, (error, stdout, stderr) => {
+      exec('ping -c 1 -W 1' + this.IP, (error, stdout, stderr) => {
         if (error) {
           this.LOGGER.error('TV is avaliable', { error }, 'isAvaliable')
           reject('No response from TV')
