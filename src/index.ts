@@ -86,12 +86,6 @@ class Samsung {
 
     this.LOGGER.log('config', config, 'constructor')
 
-    this.WS_URL = `${this.PORT === 8001 ? 'ws' : 'wss'}://${this.IP}:${
-      this.PORT
-    }/api/v2/channels/samsung.remote.control?name=${this.NAME_APP}${
-      this.TOKEN !== '' ? ` &token=${this.TOKEN}` : ''
-    }`
-
     if (this.SAVE_TOKEN) {
       try {
         fs.accessSync(this.TOKEN_FILE, fs.constants.F_OK)
@@ -102,6 +96,12 @@ class Samsung {
         console.log('File error!')
       }
     }
+    
+    this.WS_URL = `${this.PORT === 8001 ? 'ws' : 'wss'}://${this.IP}:${
+      this.PORT
+    }/api/v2/channels/samsung.remote.control?name=${this.NAME_APP}${
+      this.TOKEN !== '' ? ` &token=${this.TOKEN}` : ''
+    }`
 
     this.LOGGER.log(
       'internal config',
