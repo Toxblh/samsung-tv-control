@@ -50,6 +50,14 @@ interface Command {
   }
 }
 
+type WSData = {
+  event?: string
+  data?: {
+    token?: string
+    data?: App[]
+  }
+}
+
 class Samsung {
   private IP: string
   private MAC: string
@@ -92,11 +100,12 @@ class Samsung {
         console.log('File suss!')
         const fileData = fs.readFileSync(this.TOKEN_FILE)
         this.TOKEN = fileData.toString()
-      } catch (e) {
+      } catch (err) {
         console.log('File error!')
+        this.LOGGER.error('if (this.SAVE_TOKEN)', err, 'constructor')
       }
     }
-    
+
     this.WS_URL = `${this.PORT === 8001 ? 'ws' : 'wss'}://${this.IP}:${
       this.PORT
     }/api/v2/channels/samsung.remote.control?name=${this.NAME_APP}${
@@ -129,15 +138,17 @@ class Samsung {
     this.sendKey(KEYS.KEY_HOME, (err, res) => {
       if (err) {
         this.LOGGER.error('after sendKey', err, 'getToken')
-        throw new Error(err)
+        throw new Error('Error send Key')
       } else {
-        const token: string = (res && res.data && res.data.token && res.data.token) || null
-        this.LOGGER.log('got token', token, 'getToken')
-        this.TOKEN = token
-        if (this.SAVE_TOKEN) {
+        const token = (res && typeof res !== 'string' && res.data && res.data.token && res.data.token) || null
+        this.LOGGER.log('got token', String(token), 'getToken')
+        this.TOKEN = token || ''
+        if (this.SAVE_TOKEN && token) {
           this._saveTokenToFile(token)
+          done(token)
+        } else {
+          done(null)
         }
-        done(token)
       }
     })
   }
@@ -156,19 +167,25 @@ class Samsung {
           this.LOGGER.error('after sendKey', err, 'getTokenPromise')
           reject('after sendKey getTokenPromise')
         } else {
-          const token = (res && res.data && res.data.token && res.data.token) || null
-          this.LOGGER.log('got token', token, 'getTokenPromise')
-          this.TOKEN = token
-          if (this.SAVE_TOKEN) {
+          const token =
+            (res && typeof res !== 'string' && res.data && res.data.token && res.data.token) || null
+          this.LOGGER.log('got token', String(token), 'getTokenPromise')
+          this.TOKEN = token || ''
+          if (this.SAVE_TOKEN && token) {
             this._saveTokenToFile(token)
+            resolve(token)
+          } else {
+            reject('Bad attempt to get token')
           }
-          resolve(token)
         }
       })
     })
   }
 
-  public sendKey(key: KEYS, done?: (err?: any, res?: any) => void) {
+  public sendKey(
+    key: KEYS,
+    done?: (err: Error | { code: string } | null, res: WSData | string | null) => void
+  ) {
     this.LOGGER.log('send key', key, 'sendKey')
     if (this.PORT === 55000) {
       this._sendLegacy(key, done)
@@ -186,7 +203,7 @@ class Samsung {
     }
   }
 
-  public getAppsFromTV(done?: (err?: any, res?: any) => void) {
+  public getAppsFromTV(done?: (err: Error | { code: string } | null, res: WSData | string | null) => void) {
     return this._send(
       {
         method: 'ms.channel.emit',
@@ -200,7 +217,7 @@ class Samsung {
     )
   }
 
-  public getAppsFromTVPromise(): Promise<any> {
+  public getAppsFromTVPromise(): Promise<WSData | null> {
     return this._sendPromise({
       method: 'ms.channel.emit',
       params: {
@@ -211,15 +228,21 @@ class Samsung {
     })
   }
 
-  public openApp(appId: string, done?: (err?: any, res?: any) => void) {
+  public openApp(
+    appId: string,
+    done?: (err: Error | { code: string } | null, res: WSData | string | null) => void
+  ) {
     this.getAppsFromTV((err, res) => {
-      this.LOGGER.error('getAppsFromTV error', err, 'openApp getAppsFromTV')
-      if (err || res.data.data === undefined) {
-        this.LOGGER.error('getAppsFromTV error', err, 'openApp getAppsFromTV')
+      this.LOGGER.error('getAppsFromTV error', String(err), 'openApp getAppsFromTV')
+      if (
+        err ||
+        (res && typeof res !== 'string' && res.data && res.data.data && res.data.data === undefined)
+      ) {
+        this.LOGGER.error('getAppsFromTV error', String(err), 'openApp getAppsFromTV')
         return false
       }
 
-      const apps: App[] = res.data.data
+      const apps: App[] = res && typeof res !== 'string' && res.data && res.data.data ? res.data.data : []
       const app = apps.find(appIter => appIter.appId === appId)
 
       if (!app) {
@@ -252,7 +275,7 @@ class Samsung {
         return false
       }
 
-      const apps: App[] = res.data.data
+      const apps: App[] = res && typeof res !== 'string' && res.data && res.data.data ? res.data.data : []
       const app = apps.find(appIter => appIter.appId === appId)
 
       if (!app) {
@@ -271,8 +294,8 @@ class Samsung {
           to: 'host'
         }
       })
-    } catch (error) {
-      this.LOGGER.error('getAppsFromTV error', error, 'openAppPromise getAppsFromTV')
+    } catch (err) {
+      this.LOGGER.error('getAppsFromTV error', err, 'openAppPromise getAppsFromTV')
       return false
     }
   }
@@ -281,11 +304,11 @@ class Samsung {
     return new Promise((resolve, reject) => {
       request.get(
         { url: `http://${this.IP}:8001${this.PORT === 55000 ? '/ms/1.0/' : '/api/v2/'}`, timeout: 3000 },
-        (err: any, res: request.RequestResponse) => {
+        (err: Error, res: request.RequestResponse) => {
           if (!err && res.statusCode === 200) {
             this.LOGGER.log(
               'TV is avaliable',
-              { request: res.request, body: res.body, code: res.statusCode },
+              { request: res.request, body: res.body as string, code: res.statusCode },
               'isAvaliable'
             )
             resolve('TV is avaliable')
@@ -314,7 +337,7 @@ class Samsung {
 
   public turnOn(): Promise<string> {
     return new Promise((resolve, reject) => {
-      wol.wake(this.MAC, { num_packets: 30 }, (err: any) => {
+      wol.wake(this.MAC, { num_packets: 30 }, (err: Error) => {
         if (err) {
           this.LOGGER.error('Fail turn on', err, 'turnOn')
           reject('Fail turn on')
@@ -330,7 +353,11 @@ class Samsung {
     this.LOGGER.saveLogToFile()
   }
 
-  private _send(command: Command, done?: (err?: any, res?: any) => void, eventHandle?: string) {
+  private _send(
+    command: Command,
+    done?: (err: null | (Error & { code: string }), res: WSData | null) => void,
+    eventHandle?: string
+  ) {
     const ws = new WebSocket(this.WS_URL, { rejectUnauthorized: false })
 
     this.LOGGER.log('command', command, '_send')
@@ -345,7 +372,7 @@ class Samsung {
     })
 
     ws.on('message', (message: string) => {
-      const data: any = JSON.parse(message)
+      const data: WSData = JSON.parse(message)
 
       this.LOGGER.log('data: ', JSON.stringify(data, null, 2), 'ws.on message')
 
@@ -367,7 +394,7 @@ class Samsung {
       this.LOGGER.log('response', response, 'ws.on response')
     })
 
-    ws.on('error', (err: any) => {
+    ws.on('error', (err: Error & { code: string }) => {
       let errorMsg = ''
       if (err.code === 'EHOSTUNREACH' || err.code === 'ECONNREFUSED') {
         errorMsg = 'TV is off or unavalible'
@@ -380,7 +407,7 @@ class Samsung {
     })
   }
 
-  private _sendPromise(command: Command, eventHandle?: string) {
+  private _sendPromise(command: Command, eventHandle?: string): Promise<WSData | null> {
     return new Promise((resolve, reject) => {
       this._send(
         command,
@@ -420,7 +447,7 @@ class Samsung {
     })
   }
 
-  private _sendLegacy(key: KEYS, done?: (err?: any, res?: any) => void) {
+  private _sendLegacy(key: KEYS, done?: (err: null | Error | { code: string }, res: string) => void) {
     if (!key) {
       this.LOGGER.error('send() missing command', { key })
       return
@@ -437,13 +464,16 @@ class Samsung {
       connection.write(payload.command)
       connection.end()
       connection.destroy()
+      if (done) {
+        done(null, key)
+      }
     })
 
     connection.on('close', () => {
       this.LOGGER.log('closed connection', {}, 'connection.on close')
     })
 
-    connection.on('error', (err: { code: string }) => {
+    connection.on('error', (err: Error & { code: string }) => {
       let errorMsg = ''
 
       if (err.code === 'EHOSTUNREACH' || err.code === 'ECONNREFUSED') {
@@ -455,7 +485,7 @@ class Samsung {
       console.error(errorMsg)
       this.LOGGER.error(errorMsg, err, 'connection.on error')
       if (done) {
-        done(err, null)
+        done(err, key)
       }
     })
 
@@ -463,7 +493,7 @@ class Samsung {
       console.error('timeout')
       this.LOGGER.error('timeout', err, 'connection.on timeout')
       if (done) {
-        done(err, null)
+        done(err, key)
       }
     })
   }
@@ -526,9 +556,9 @@ class Samsung {
       fs.accessSync(this.TOKEN_FILE, fs.constants.F_OK)
       console.log('File suss!')
       fs.writeFileSync(this.TOKEN_FILE, token)
-    } catch (e) {
+    } catch (err) {
       console.log('File error!')
-      fs.writeFileSync(this.TOKEN_FILE, token)
+      this.LOGGER.error('catch fil esave', err, '_saveTokenToFile')
     }
   }
 }

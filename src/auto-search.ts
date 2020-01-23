@@ -8,7 +8,45 @@ interface TV {
   name: string
   model: string
   ip: string
-  mac: string
+  wifiMac: string
+}
+
+interface Device {
+  FrameTVSupport: string
+  GamePadSupport: string
+  ImeSyncedSupport: string
+  OS: string
+  TokenAuthSupport: string
+  VoiceSupport: string
+  countryCode: string
+  description: string
+  developerIP: string
+  developerMode: string
+  duid: string
+  firmwareVersion: string
+  id: string
+  ip: string
+  model: string
+  modelName: string
+  name: string
+  networkType: string
+  resolution: string
+  smartHubAgreement: string
+  ssid: string
+  type: string
+  udn: string
+  wifiMac: string
+}
+
+interface SamsungInfo {
+  device: Device
+  id: string
+  isSupport: string
+  name: string
+  remote: string
+  type: string
+  uri: string
+  version: string
 }
 
 class AutoSearch {
@@ -24,7 +62,7 @@ class AutoSearch {
     return new Promise<TV[]>((resolve, reject) => {
       this.client.search('ssdp:all')
 
-      setTimeout(this.stopSearch.bind(this, resolve, reject), time || 5000)
+      setTimeout(this.stopSearch.bind(this, resolve, reject), time || 15000)
     })
   }
 
@@ -33,15 +71,15 @@ class AutoSearch {
       this.IPs.push(rinfo.address)
 
       // TODO Add rotation Urls
-      request.get({ url: `http://${rinfo.address}:8001/api/v2/` }, (err, res) => {
+      request.get({ url: `http://${rinfo.address}:8001/api/v2/` }, (err: Error, res, body: string) => {
         if (!err && res.statusCode === 200) {
-          const data = JSON.parse(res.body)
+          const data: SamsungInfo = JSON.parse(body) as SamsungInfo
 
           this.TVs.push({
-            name: data.device.name,
-            model: data.device.modelName,
             ip: data.device.ip,
-            mac: data.device.wifiMac
+            model: data.device.modelName,
+            name: data.device.name,
+            wifiMac: data.device.wifiMac,
           })
         }
       })
