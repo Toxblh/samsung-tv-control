@@ -8,6 +8,7 @@ import * as WebSocket from 'ws'
 import { KEYS } from './keys'
 import Logger from './logger'
 import { Configuration, WSData, App, Command } from './types'
+import { base64, chr, getMsgInstalledApp, getMsgLaunchApp, getCommandByKey } from './helpers'
 
 class Samsung {
   private IP: string
@@ -106,28 +107,11 @@ class Samsung {
 
   public getTokenPromise(): Promise<string> {
     return new Promise((resolve, reject) => {
-      this.LOGGER.log('getTokenPromise', '')
-
-      if (this.SAVE_TOKEN && this.TOKEN !== 'null' && this.TOKEN !== '') {
-        resolve(this.TOKEN)
-        return
-      }
-
-      this.sendKey(KEYS.KEY_HOME, (err, res) => {
-        if (err) {
-          this.LOGGER.error('after sendKey', err, 'getTokenPromise')
-          reject('after sendKey getTokenPromise')
+      this.getToken(token => {
+        if (token) {
+          resolve(token)
         } else {
-          const token =
-            (res && typeof res !== 'string' && res.data && res.data.token && res.data.token) || null
-          this.LOGGER.log('got token', String(token), 'getTokenPromise')
-          this.TOKEN = token || ''
-          if (this.SAVE_TOKEN && token) {
-            this._saveTokenToFile(token)
-            resolve(token)
-          } else {
-            reject('Bad attempt to get token')
-          }
+          reject()
         }
       })
     })
@@ -141,7 +125,7 @@ class Samsung {
     if (this.PORT === 55000) {
       this._sendLegacy(key, done)
     } else {
-      this._send(this._getCommandByKey(key), done, 'ms.channel.connect')
+      this._send(getCommandByKey(key), done, 'ms.channel.connect')
     }
   }
 
@@ -150,33 +134,16 @@ class Samsung {
     if (this.PORT === 55000) {
       return this._sendLegacyPromise(key)
     } else {
-      return this._sendPromise(this._getCommandByKey(key), 'ms.channel.connect')
+      return this._sendPromise(getCommandByKey(key), 'ms.channel.connect')
     }
   }
 
   public getAppsFromTV(done?: (err: Error | { code: string } | null, res: WSData | string | null) => void) {
-    return this._send(
-      {
-        method: 'ms.channel.emit',
-        params: {
-          data: '',
-          event: 'ed.installedApp.get',
-          to: 'host'
-        }
-      },
-      done
-    )
+    return this._send(getMsgInstalledApp(), done)
   }
 
   public getAppsFromTVPromise(): Promise<WSData | null> {
-    return this._sendPromise({
-      method: 'ms.channel.emit',
-      params: {
-        data: '',
-        event: 'ed.installedApp.get',
-        to: 'host'
-      }
-    })
+    return this._sendPromise(getMsgInstalledApp())
   }
 
   public openApp(
@@ -201,54 +168,20 @@ class Samsung {
         throw new Error('This APP is not installed')
       }
 
-      this._send(
-        {
-          method: 'ms.channel.emit',
-          params: {
-            data: {
-              action_type: app.app_type === 2 ? 'DEEP_LINK' : 'NATIVE_LAUNCH',
-              appId: app.appId
-            },
-            event: 'ed.apps.launch',
-            to: 'host'
-          }
-        },
-        done
-      )
+      this._send(getMsgLaunchApp(app), done)
     })
   }
 
   public async openAppPromise(appId: string) {
-    try {
-      const res = await this.getAppsFromTVPromise()
-      if (res && res.data && res.data.data === undefined) {
-        this.LOGGER.error('getAppsFromTV res.data.data is undefined', '', 'openAppPromise getAppsFromTV')
-        return false
-      }
-
-      const apps: App[] = res && typeof res !== 'string' && res.data && res.data.data ? res.data.data : []
-      const app = apps.find(appIter => appIter.appId === appId)
-
-      if (!app) {
-        this.LOGGER.error('This APP is not installed', { appId, app }, 'openAppPromise getAppsFromTV')
-        throw new Error('This APP is not installed')
-      }
-
-      return this._sendPromise({
-        method: 'ms.channel.emit',
-        params: {
-          data: {
-            action_type: app.app_type === 2 ? 'DEEP_LINK' : 'NATIVE_LAUNCH',
-            appId: app.appId
-          },
-          event: 'ed.apps.launch',
-          to: 'host'
+    return new Promise((resolve, reject) => {
+      this.openApp(appId, (err, res) => {
+        if (!err) {
+          resolve(res)
+        } else {
+          reject(err)
         }
       })
-    } catch (err) {
-      this.LOGGER.error('getAppsFromTV error', err, 'openAppPromise getAppsFromTV')
-      return false
-    }
+    })
   }
 
   public isAvaliable(): Promise<string> {
@@ -274,7 +207,7 @@ class Samsung {
 
   public isAvaliablePing(): Promise<string> {
     return new Promise((resolve, reject) => {
-      exec('ping -c 1 -W 1 ' + this.IP, (error, stdout, stderr) => {
+      exec('ping -c 1 -W 1 ' + this.IP, (error, stdout, _) => {
         if (error) {
           this.LOGGER.error('TV is avaliable', { error }, 'isAvaliable')
           reject('No response from TV')
@@ -374,30 +307,6 @@ class Samsung {
     })
   }
 
-  private _getCommandByKey(key: KEYS): Command {
-    return {
-      method: 'ms.remote.control',
-      params: {
-        Cmd: 'Click',
-        DataOfCmd: key,
-        Option: 'false',
-        TypeOfRemote: 'SendRemoteKey'
-      }
-    }
-  }
-
-  private _sendLegacyPromise(key: KEYS) {
-    return new Promise((resolve, reject) => {
-      this._sendLegacy(key, (err, res) => {
-        if (!err) {
-          resolve(res)
-        } else {
-          reject(err)
-        }
-      })
-    })
-  }
-
   private _sendLegacy(key: KEYS, done?: (err: null | Error | { code: string }, res: string) => void) {
     if (!key) {
       this.LOGGER.error('send() missing command', { key })
@@ -449,57 +358,55 @@ class Samsung {
     })
   }
 
+  private _sendLegacyPromise(key: KEYS) {
+    return new Promise((resolve, reject) => {
+      this._sendLegacy(key, (err, res) => {
+        if (!err) {
+          resolve(res)
+        } else {
+          reject(err)
+        }
+      })
+    })
+  }
+
   private getLegacyCommand(key: KEYS) {
     const payload = { header: '', command: '' }
 
     const headerData =
-      this.chr(0x64) +
-      this.chr(0x00) +
-      this.chr(this.base64(this.IP).length) +
-      this.chr(0x00) +
-      this.base64(this.IP) +
-      this.chr(this.base64(this.MAC).length) +
-      this.chr(0x00) +
-      this.base64(this.MAC) +
-      this.chr(this.base64(this.NAME_APP).length) +
-      this.chr(0x00) +
-      this.base64(this.NAME_APP)
+      chr(0x64) +
+      chr(0x00) +
+      chr(base64(this.IP).length) +
+      chr(0x00) +
+      base64(this.IP) +
+      chr(base64(this.MAC).length) +
+      chr(0x00) +
+      base64(this.MAC) +
+      chr(base64(this.NAME_APP).length) +
+      chr(0x00) +
+      base64(this.NAME_APP)
 
     payload.header =
-      this.chr(0x00) +
-      this.chr(this.APP_STRING.length) +
-      this.chr(0x00) +
+      chr(0x00) +
+      chr(this.APP_STRING.length) +
+      chr(0x00) +
       this.APP_STRING +
-      this.chr(headerData.length) +
-      this.chr(0x00) +
+      chr(headerData.length) +
+      chr(0x00) +
       headerData
 
-    const commandData =
-      this.chr(0x00) +
-      this.chr(0x00) +
-      this.chr(0x00) +
-      this.chr(this.base64(key).length) +
-      this.chr(0x00) +
-      this.base64(key)
+    const commandData = chr(0x00) + chr(0x00) + chr(0x00) + chr(base64(key).length) + chr(0x00) + base64(key)
 
     payload.command =
-      this.chr(0x00) +
-      this.chr(this.TV_APP_STRING.length) +
-      this.chr(0x00) +
+      chr(0x00) +
+      chr(this.TV_APP_STRING.length) +
+      chr(0x00) +
       this.TV_APP_STRING +
-      this.chr(commandData.length) +
-      this.chr(0x00) +
+      chr(commandData.length) +
+      chr(0x00) +
       commandData
 
     return payload
-  }
-
-  private chr(char: number) {
-    return String.fromCharCode(char)
-  }
-
-  private base64(str: string) {
-    return Buffer.from(str).toString('base64')
   }
 
   private _saveTokenToFile(token: string) {

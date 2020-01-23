@@ -67,24 +67,29 @@ class AutoSearch {
   }
 
   public deviceUpdate(headers: SsdpHeaders, _: number, rinfo: dgram.RemoteInfo) {
-    if (headers && headers.ST && headers.ST.includes(SAMSUNG_TV_URN) && !this.IPs.includes(rinfo.address)) {
-      this.IPs.push(rinfo.address)
-
-      // TODO Add rotation Urls
-      request.get({ url: `http://${rinfo.address}:8001/api/v2/` }, (err: Error, res, body: string) => {
-        if (!err && res.statusCode === 200) {
-          const data: SamsungInfo = JSON.parse(body) as SamsungInfo
-
-          this.TVs.push({
-            ip: data.device.ip,
-            model: data.device.modelName,
-            name: data.device.name,
-            wifiMac: data.device.wifiMac,
-          })
-        }
-      })
+    if ((headers && headers.ST && !headers.ST.includes(SAMSUNG_TV_URN)) || this.IPs.includes(rinfo.address)) {
+      return
     }
+
+    this.IPs.push(rinfo.address)
+
+    // TODO Add rotation Urls
+    request.get({ url: `http://${rinfo.address}:8001/api/v2/` }, (err: Error, res, body: string) => {
+      if (err || res.statusCode !== 200) {
+        return
+      }
+
+      const data: SamsungInfo = JSON.parse(body) as SamsungInfo
+
+      this.TVs.push({
+        ip: data.device.ip,
+        model: data.device.modelName,
+        name: data.device.name,
+        wifiMac: data.device.wifiMac
+      })
+    })
   }
+
   private stopSearch(resolve: (data: TV[]) => void) {
     this.client.stop()
     resolve(this.TVs)

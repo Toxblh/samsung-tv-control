@@ -98,16 +98,6 @@ describe('private fns', () => {
     control = new Samsung(config)
   })
 
-  it('should return chr', () => {
-    // @ts-ignore
-    expect(control.chr(0x00)).toEqual('\u0000')
-  })
-
-  it('should return base64', () => {
-    // @ts-ignore
-    expect(control.base64('node')).toEqual('bm9kZQ==')
-  })
-
   it('should saveToken', () => {
     // jest.spyOn(fs, 'writeFileSync')
     jest.spyOn(fs, 'accessSync')
