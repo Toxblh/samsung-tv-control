@@ -1,0 +1,71 @@
+name: NPM Publish
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  npm-publish:
+    name: npm-publish
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@master
+
+    - name: Set up Node.js
+      uses: actions/setup-node@master
+      with:
+        node-version: 12.x
+
+# PreInstall
+    - name: add yarn, gulp, codecov
+      run: npm install -g yarn gulp-cli codecov
+
+# Install, Build and Test
+    - name: yarn install, build and test
+      run: |
+        yarn
+        yarn test
+      env:
+        CI: true
+
+# NPM Publish
+    - name: Publish to npm
+      uses: pascalgn/npm-publish-action@1.1.0
+      with:
+        tag_name: "v%s"
+        tag_message: "v%s"
+        commit_pattern: "^Release (\\S+)"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+
+# GitHub Release
+    - name: Package lib
+      run: npm pack
+
+    - name: GitHub Release
+      uses: ncipollo/release-action@v1
+      with:
+        artifacts: "samsung-tv-control-*.tgz"
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+# Coverage
+    - name: Coverage
+      run: yarn coverage
+
+    - name: Publish codecov
+      run: codecov -f coverage/*.json
+
+# TypeDoc
+    - name: Generate TypeDoc
+      run: npm run typedoc
+
+    - name: Publish generated content to GitHub Pages
+      uses: tsunematsu21/actions-publish-gh-pages@v1.0.0
+      with:
+        dir: dist
+        branch: gh-pages
+        token: ${{ secrets.GITHUB_TOKEN }}
+
