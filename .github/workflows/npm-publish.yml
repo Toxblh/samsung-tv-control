@@ -19,14 +19,14 @@ jobs:
         node-version: 12.x
 
 # PreInstall
-    - name: add yarn, gulp, codecov
-      run: npm install -g yarn gulp-cli codecov
+    - name: add gulp, codecov
+      run: npm install -g gulp-cli codecov
 
 # Install, Build and Test
-    - name: yarn install, build and test
+    - name: npm install, build and test
       run: |
-        yarn
-        yarn test
+        npm install
+        npm test
       env:
         CI: true
 
@@ -53,7 +53,7 @@ jobs:
 
 # Coverage
     - name: Coverage
-      run: yarn coverage
+      run: npm run coverage
 
     - name: Publish codecov
       run: codecov -f coverage/*.json
