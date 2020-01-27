@@ -52,7 +52,7 @@
     "jest": "^25.1.0",
     "ts-jest": "^25.0.0",
     "tslint": "^6.0.0",
-    "typedoc": "^0.16.8",
+    "typedoc": "^0.16.9",
     "typescript": "^3.7.5"
   },
   "jest": {
