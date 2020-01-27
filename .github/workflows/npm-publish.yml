@@ -63,9 +63,8 @@ jobs:
       run: npm run typedoc
 
     - name: Publish generated content to GitHub Pages
-      uses: tsunematsu21/actions-publish-gh-pages@v1.0.0
-      with:
-        dir: dist
-        branch: gh-pages
-        token: ${{ secrets.GITHUB_TOKEN }}
-
+      uses: peaceiris/actions-gh-pages@v2
+      env:
+        ACTIONS_DEPLOY_KEY: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+        PUBLISH_BRANCH: gh-pages
+        PUBLISH_DIR: ./dist
