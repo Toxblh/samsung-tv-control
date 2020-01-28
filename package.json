@@ -15,7 +15,10 @@
     "coverage": "jest --coverage",
     "typedoc": "typedoc",
     "typecover": "type-coverage --detail --ignore-catch",
-    "posttypedoc": "touch ./docs/.nojekyll"
+    "posttypedoc": "touch ./docs/.nojekyll",
+    "patch": "npm version patch -m \"Release %s\" && git push && git push --tags",
+    "minor": "npm version minor -m \"Release %s\" && git push && git push --tags",
+    "major": "npm version major -m \"Release %s\" && git push && git push --tags"
   },
   "repository": {
     "type": "git",

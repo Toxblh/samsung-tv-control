@@ -50,7 +50,6 @@ jobs:
       with:
         artifacts: "samsung-tv-control-*.tgz"
         token: ${{ secrets.GITHUB_TOKEN }}
-        tag:  ${{ github.ref }}
 
 # Coverage
     - name: Coverage
