@@ -2,55 +2,48 @@ name: NPM Publish
 
 on:
   push:
-    branches:
-      - master
+    tags:
+      - "v*"
 
 jobs:
   npm-publish:
     name: npm-publish
     runs-on: ubuntu-latest
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@master
-
-    - name: Set up Node.js
-      uses: actions/setup-node@master
-      with:
-        node-version: 12.x
 
 # PreInstall
     - name: add gulp, codecov
       run: npm install -g gulp-cli codecov
 
 # Install, Build and Test
-    - name: npm install, build and test
+    - name: yarn install, build and test
       run: |
-        npm install
-        npm test
+        yarn --frozen-lockfile
+        yarn test -- --colors --forceExit
       env:
         CI: true
 
 # NPM Publish
     - name: Publish to npm
-      uses: pascalgn/npm-publish-action@1.1.0
-      with:
-        tag_name: "v%s"
-        tag_message: "v%s"
-        commit_pattern: "^Release (\\S+)"
+      run: |
+        npm config set //registry.npmjs.org/:_authToken=$NODE_AUTH_TOKEN
+        npm publish
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
 
 # Coverage
     - name: Coverage
-      run: npm run coverage
+      run: yarn coverage
 
     - name: Publish codecov
       run: codecov -f coverage/*.json
 
 # TypeDoc
     - name: Generate TypeDoc
-      run: npm run typedoc
+      run: yarn typedoc
 
     - name: Publish generated content to GitHub Pages
       uses: peaceiris/actions-gh-pages@v2
@@ -68,7 +61,6 @@ jobs:
     - name: GitHub Release
       uses: "marvinpinto/action-automatic-releases@latest"
       with:
-        automatic_release_tag: "latest"
         repo_token: "${{ secrets.GITHUB_TOKEN }}"
         prerelease: false
         files: samsung-tv-control-*.tgz
