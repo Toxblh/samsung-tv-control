@@ -1,6 +1,6 @@
 {
   "name": "samsung-tv-control",
-  "version": "1.7.9",
+  "version": "1.7.10",
   "description": "Remote your tv via JS!",
   "main": "./lib/index.js",
   "typings": "./lib/index.d.ts",
