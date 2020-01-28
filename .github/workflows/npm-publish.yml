@@ -45,11 +45,12 @@ jobs:
     - name: Package lib
       run: npm pack
 
-    # - name: GitHub Release
-    #   uses: ncipollo/release-action@v1
-    #   with:
-    #     artifacts: "samsung-tv-control-*.tgz"
-    #     token: ${{ secrets.GITHUB_TOKEN }}
+    - name: GitHub Release
+      uses: ncipollo/release-action@v1
+      with:
+        artifacts: "samsung-tv-control-*.tgz"
+        token: ${{ secrets.GITHUB_TOKEN }}
+        tag:  ${{ github.ref }}
 
 # Coverage
     - name: Coverage
@@ -68,3 +69,5 @@ jobs:
         ACTIONS_DEPLOY_KEY: ${{ secrets.ACTIONS_DEPLOY_KEY }}
         PUBLISH_BRANCH: gh-pages
         PUBLISH_DIR: ./dist
+      with:
+        keepFiles: true
