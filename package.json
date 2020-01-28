@@ -16,9 +16,9 @@
     "typedoc": "typedoc",
     "typecover": "type-coverage --detail --ignore-catch",
     "posttypedoc": "touch ./docs/.nojekyll",
-    "patch": "npm version patch -m \"Release %s\" && git push && git push --tags",
-    "minor": "npm version minor -m \"Release %s\" && git push && git push --tags",
-    "major": "npm version major -m \"Release %s\" && git push && git push --tags"
+    "patch": "git commit -am \"Release $(npm version --no-git-tag-version patch | sed 's/^.//')\" && git push --follow-tags",
+    "minor": "git commit -am \"Release $(npm version --no-git-tag-version minor | sed 's/^.//')\" && git push --follow-tags",
+    "major": "git commit -am \"Release $(npm version --no-git-tag-version major | sed 's/^.//')\" && git push --follow-tags"
   },
   "repository": {
     "type": "git",
