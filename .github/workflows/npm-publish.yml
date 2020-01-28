@@ -14,6 +14,11 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@master
 
+    - name: Set up Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+
 # PreInstall
     - name: add gulp, codecov
       run: npm install -g gulp-cli codecov
