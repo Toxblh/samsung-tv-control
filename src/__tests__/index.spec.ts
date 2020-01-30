@@ -89,6 +89,13 @@ describe('Minimal config', () => {
       'wss://192.168.1.2:8002/api/v2/channels/samsung.remote.control?name=Tm9kZUpTIFJlbW90ZQ=='
     )
   })
+
+  it('should sendYouTubeLink', () => {
+    const spy = jest.spyOn(control, 'openYouTubeLink')
+    control.openYouTubeLink('https://www.youtube.com/watch?v=1111111')
+
+    expect(spy).toHaveBeenCalled()
+  })
 })
 
 describe('private fns', () => {
