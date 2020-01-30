@@ -8,7 +8,7 @@ import * as WebSocket from 'ws'
 import { KEYS } from './keys'
 import Logger from './logger'
 import { Configuration, WSData, App, Command } from './types'
-import { base64, chr, getMsgInstalledApp, getMsgLaunchApp, getCommandByKey } from './helpers'
+import { base64, chr, getVideoId, getMsgInstalledApp, getMsgLaunchApp, getCommandByKey } from './helpers'
 
 class Samsung {
   private IP: string
@@ -181,6 +181,34 @@ class Samsung {
           reject(err)
         }
       })
+    })
+  }
+
+  public openYouTubeLink(url: string) {
+    const videoId = getVideoId(url)
+    if (!videoId) {
+      return false
+    }
+
+    return new Promise((resolve, reject) => {
+      request.post(
+        'http://' + this.IP + ':8080/ws/apps/YouTube',
+        {
+          headers: {
+            'Content-Type': 'text/plain',
+            'Content-Length': Buffer.byteLength(videoId)
+          },
+          timeout: 10000,
+          body: videoId
+        },
+        err => {
+          if (!err) {
+            resolve('Link sended')
+          } else {
+            reject('While send a link, somthing went wrong')
+          }
+        }
+      )
     })
   }
 

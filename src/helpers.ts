@@ -9,6 +9,13 @@ export function base64(str: string) {
   return Buffer.from(str).toString('base64')
 }
 
+export function getVideoId(url: string) {
+  const regExp = /.*(?:youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=)([^#\&\?]*).*/
+  const match = url.match(regExp)
+  const videoId = match && match[1].length > 5 ? match[1] : false
+
+  return videoId
+}
 
 export function getCommandByKey(key: KEYS): Command {
   return {
