@@ -19,9 +19,20 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
+# PreInstall
+    - name: add gulp, codecov
+      run: npm install -g gulp-cli codecov
+
     - name: yarn install, build and test
       run: |
         yarn --frozen-lockfile
         yarn test -- --colors --forceExit
       env:
         CI: true
+
+# Coverage
+    - name: Coverage
+      run: yarn coverage
+
+    - name: Publish codecov
+      run: codecov -f coverage/*.json
