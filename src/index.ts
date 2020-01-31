@@ -22,6 +22,8 @@ class Samsung {
   private SAVE_TOKEN: boolean
   private TOKEN_FILE = path.join(__dirname, 'token.txt')
   private WS_URL: string
+  private ws: WebSocket | null = null
+  private wsTimeout: NodeJS.Timeout | null = null
 
   constructor(config: Configuration) {
     if (!config.ip) {
@@ -270,20 +272,26 @@ class Samsung {
     done?: (err: null | (Error & { code: string }), res: WSData | null) => void,
     eventHandle?: string
   ) {
-    const ws = new WebSocket(this.WS_URL, { rejectUnauthorized: false })
+    if (!this.ws) {
+      this.ws = new WebSocket(this.WS_URL, { rejectUnauthorized: false })
+    } else {
+      this.wsKeepAlive()
+    }
 
     this.LOGGER.log('command', command, '_send')
     this.LOGGER.log('wsUrl', this.WS_URL, '_send')
 
-    ws.on('open', () => {
+    this.ws.on('open', () => {
       if (this.PORT === 8001) {
-        setTimeout(() => ws.send(JSON.stringify(command)), 1000)
+        setTimeout(() => this.ws && this.ws.send(JSON.stringify(command)), 1000)
       } else {
-        ws.send(JSON.stringify(command))
+        if (this.ws) {
+          this.ws.send(JSON.stringify(command))
+        }
       }
     })
 
-    ws.on('message', (message: string) => {
+    this.ws.on('message', (message: string) => {
       const data: WSData = JSON.parse(message)
 
       this.LOGGER.log('data: ', JSON.stringify(data, null, 2), 'ws.on message')
@@ -295,18 +303,18 @@ class Samsung {
 
       if (data.event !== 'ms.channel.connect') {
         this.LOGGER.log('if not correct event', 'ws is close', 'ws.on message')
-        ws.close()
+        // this.ws.close()
       }
 
       // TODO, additional check on avaliable instead of ws.open
       // if(data.event == "ms.channel.connect") { _sendCMD() }
     })
 
-    ws.on('response', (response: WebSocket.Data) => {
+    this.ws.on('response', (response: WebSocket.Data) => {
       this.LOGGER.log('response', response, 'ws.on response')
     })
 
-    ws.on('error', (err: Error & { code: string }) => {
+    this.ws.on('error', (err: Error & { code: string }) => {
       let errorMsg = ''
       if (err.code === 'EHOSTUNREACH' || err.code === 'ECONNREFUSED') {
         errorMsg = 'TV is off or unavalible'
@@ -317,6 +325,32 @@ class Samsung {
         done(err, null)
       }
     })
+
+    this.ws.on('close', () => {
+      this.wsClearTimeout()
+      this.ws = null
+    })
+  }
+
+  private wsKeepAlive() {
+    this.LOGGER.log('wsKeepAlive', {})
+    this.wsClearTimeout()
+    this.wsTimeout = setTimeout(() => this.wsClose(), 60 * 1000)
+  }
+
+  private wsClearTimeout() {
+    this.LOGGER.log('wsClearTimeout', {})
+    if (this.wsTimeout) {
+      clearTimeout(this.wsTimeout)
+      this.wsTimeout = null
+    }
+  }
+
+  private wsClose() {
+    this.LOGGER.log('wsClose', {})
+    if (this.ws) {
+      this.ws.close()
+    }
   }
 
   private _sendPromise(command: Command, eventHandle?: string): Promise<WSData | null> {
