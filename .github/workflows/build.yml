@@ -4,20 +4,17 @@ on: [push]
 
 jobs:
   build:
-
+    name: build-and-test
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [10.x, 12.x, 13.x]
-
     steps:
-    - uses: actions/checkout@v1
+    - name: Checkout repository
+      uses: actions/checkout@v1
 
-    - name: Use Node.js ${{ matrix.node-version }}
+    - name: Set up Node.js
       uses: actions/setup-node@v1
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version: 12.x
 
 # PreInstall
     - name: add gulp, codecov
@@ -27,12 +24,8 @@ jobs:
       run: |
         yarn --frozen-lockfile
         yarn test -- --colors --forceExit
+        yarn coverage
+        codecov -f coverage/*.json
       env:
         CI: true
 
-# Coverage
-    - name: Coverage
-      run: yarn coverage
-
-    - name: Publish codecov
-      run: codecov -f coverage/*.json
