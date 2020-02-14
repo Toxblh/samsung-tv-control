@@ -192,6 +192,8 @@ class Samsung {
       return false
     }
 
+    this.LOGGER.log('videoId', { videoId }, 'openYouTubeLink')
+
     return new Promise((resolve, reject) => {
       request.post(
         'http://' + this.IP + ':8080/ws/apps/YouTube',
@@ -203,10 +205,12 @@ class Samsung {
           timeout: 10000,
           body: videoId
         },
-        err => {
+        (err, response) => {
           if (!err) {
+            this.LOGGER.log('Link sended', { status: response.statusCode, body: response.body, headers: response.headers }, 'openYouTubeLink')
             resolve('Link sended')
           } else {
+            this.LOGGER.error('While send a link, somthing went wrong', { err }, 'openYouTubeLink')
             reject('While send a link, somthing went wrong')
           }
         }
@@ -296,13 +300,17 @@ class Samsung {
 
       this.LOGGER.log('data: ', JSON.stringify(data, null, 2), 'ws.on message')
 
+      if (done) {
+        done(null, data)
+      }
+
       if (done && (data.event === command.params.event || data.event === eventHandle)) {
-        this.LOGGER.log('if correct event', 'callback triggered', 'ws.on message')
+        this.LOGGER.log('if correct event', JSON.stringify(data, null, 2), 'ws.on message')
         done(null, data)
       }
 
       if (data.event !== 'ms.channel.connect') {
-        this.LOGGER.log('if not correct event', 'ws is close', 'ws.on message')
+        this.LOGGER.log('if not correct event', JSON.stringify(data, null, 2), 'ws.on message')
         // this.ws.close()
       }
 
