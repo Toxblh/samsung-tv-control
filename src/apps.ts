@@ -26,3 +26,5 @@ export enum APPS {
   'YouTube' = '111299001912',
   'hayu' = '3201806016381',
 }
+
+export default APPS

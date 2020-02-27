@@ -1,6 +1,4 @@
-const Samsung = require('samsung-tv-control')
-const { KEYS } = require('samsung-tv-control/lib/keys')
-const { APPS } = require('samsung-tv-control/lib/apps')
+const { Samsung, APPS, KEYS } = require('../lib/index')
 
 const config = {
   debug: true, // Default: false
