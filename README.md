@@ -29,6 +29,7 @@ Also you can use the lib in your Node-RED https://github.com/Toxblh/node-red-con
 You can try [example code](example/index.js)
 
 ```js
+// import Samsung, { APPS, KEYS } from 'samsung-tv-control'
 const { Samsung, KEYS, APPS } = require('samsung-tv-control')
 
 const config = {
@@ -73,6 +74,10 @@ control
         console.log('# Response openApp', res)
       }
     })
+
+    // Control will keep connection for next messages in 1 minute
+    // If you would like to close it immediately, you can use `closeConnection()`
+    control.closeConnection()
   })
   .catch(e => console.error(e))
 ```

@@ -10,6 +10,6 @@
   },
   "rulesDirectory": [],
   "linterOptions": {
-    "exclude": ["node_modules/**/*.{ts,tsx}", "**/*.{js,jsx,mjs,json}"]
+    "exclude": ["node_modules/**/*.{ts,tsx}", "**/*.{js,jsx,mjs,json}", "src/**/*.spec.*"]
   }
 }

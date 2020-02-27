@@ -8,7 +8,15 @@ import * as WebSocket from 'ws'
 import { KEYS } from './keys'
 import Logger from './logger'
 import { Configuration, WSData, App, Command } from './types'
-import { base64, chr, getVideoId, getMsgInstalledApp, getMsgLaunchApp, getCommandByKey, getSendTextCommand } from './helpers'
+import {
+  base64,
+  chr,
+  getVideoId,
+  getMsgInstalledApp,
+  getMsgLaunchApp,
+  getCommandByKey,
+  getSendTextCommand
+} from './helpers'
 
 class Samsung {
   private IP: string
@@ -230,7 +238,11 @@ class Samsung {
         },
         (err, response) => {
           if (!err) {
-            this.LOGGER.log('Link sended', { status: response.statusCode, body: response.body, headers: response.headers }, 'openYouTubeLink')
+            this.LOGGER.log(
+              'Link sended',
+              { status: response.statusCode, body: response.body, headers: response.headers },
+              'openYouTubeLink'
+            )
             resolve('Link sended')
           } else {
             this.LOGGER.error('While send a link, somthing went wrong', { err }, 'openYouTubeLink')
@@ -292,6 +304,13 @@ class Samsung {
 
   public getLogs() {
     this.LOGGER.saveLogToFile()
+  }
+
+  /**
+   * If you don't need to keep connection, you can to close immediately
+   */
+  public closeConnection() {
+    this.wsClose()
   }
 
   private _send(

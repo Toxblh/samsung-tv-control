@@ -38,6 +38,7 @@ async function main() {
   // await control.openApp(APPS.YouTube)
   await control.sendKeyPromise(KEYS.KEY_POWER)
   await control.getLogs()
+  control.closeConnection()
   return
 }
 
