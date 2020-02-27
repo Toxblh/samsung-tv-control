@@ -1,5 +1,10 @@
 const { Samsung, APPS, KEYS } = require('../lib/index')
 
+/*
+Typescript Example for Dinamic Keys
+import { $enum } from 'ts-enum-util'
+*/
+
 const config = {
   debug: true, // Default: false
   ip: '192.168.1.2',
@@ -19,6 +24,15 @@ control
     control.getToken(token => {
       console.info('# Response getToken:', token)
     })
+
+    /*
+      Typescript Example for Dinamic Keys
+      const KeyTypes = $enum(KEYS).getValues()
+
+      const getEnumValue = (key: any) => {
+        return KeyTypes[key]
+      }
+    */
 
     // Send key to TV
     control.sendKey(KEYS.KEY_HOME, function(err, res) {
