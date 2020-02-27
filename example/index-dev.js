@@ -1,6 +1,4 @@
-const Samsung = require('../lib/index').default
-const { KEYS } = require('../lib/keys')
-const { APPS } = require('../lib/apps')
+const { Samsung, APPS, KEYS } = require('../lib/index')
 
 const config = {
   debug: true, // Default: false
@@ -20,6 +18,7 @@ async function main() {
   console.log('$$ token:', token)
 
   await control.sendKeyPromise(KEYS.KEY_HOME)
+  await control.sendTextPromise('Text to be inserted in some focused input')
   await control.getAppsFromTVPromise()
   await control.openApp(APPS.Spotify)
   // await control.openApp(APPS.YouTube)

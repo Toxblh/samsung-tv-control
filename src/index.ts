@@ -6,9 +6,10 @@ import * as request from 'request'
 import * as wol from 'wake_on_lan'
 import * as WebSocket from 'ws'
 import { KEYS } from './keys'
+import { APPS } from './apps'
 import Logger from './logger'
 import { Configuration, WSData, App, Command } from './types'
-import { base64, chr, getVideoId, getMsgInstalledApp, getMsgLaunchApp, getCommandByKey } from './helpers'
+import { base64, chr, getVideoId, getMsgInstalledApp, getMsgLaunchApp, getCommandByKey, getSendTextCommand } from './helpers'
 
 class Samsung {
   private IP: string
@@ -137,6 +138,29 @@ class Samsung {
       return this._sendLegacyPromise(key)
     } else {
       return this._sendPromise(getCommandByKey(key), 'ms.channel.connect')
+    }
+  }
+
+  public sendText(
+    text: string,
+    done?: (err: Error | { code: string } | null, res: WSData | string | null) => void
+  ) {
+    this.LOGGER.log('send text', text, 'sendText')
+    if (this.PORT === 55000) {
+      this.LOGGER.error('send text not supported in legacy api', 'send text not supported', 'send text error')
+      return false
+    } else {
+      this._send(getSendTextCommand(text), done, 'ms.channel.connect')
+    }
+  }
+
+  public sendTextPromise(text: string) {
+    this.LOGGER.log('send text', text, 'sendTextPromise')
+    if (this.PORT === 55000) {
+      this.LOGGER.error('send text not supported in legacy api', 'send text not supported', 'send text error')
+      return false
+    } else {
+      return this._sendPromise(getSendTextCommand(text), 'ms.channel.connect')
     }
   }
 
@@ -491,4 +515,8 @@ class Samsung {
   }
 }
 
-export default Samsung
+export default {
+  Samsung,
+  KEYS,
+  APPS
+}
