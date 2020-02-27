@@ -242,3 +242,5 @@ export enum KEYS {
   KEY_ZOOM1 = 'KEY_ZOOM1',
   KEY_ZOOM2 = 'KEY_ZOOM2',
 }
+
+export default KEYS

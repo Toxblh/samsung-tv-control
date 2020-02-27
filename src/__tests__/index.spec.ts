@@ -1,4 +1,4 @@
-import Samsung from '../index'
+import Samsung from '../samsung'
 import * as fs from 'fs'
 
 jest.mock('fs')

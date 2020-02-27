@@ -1,6 +1,9 @@
-const Samsung = require('samsung-tv-control')
-const { KEYS } = require('samsung-tv-control/lib/keys')
-const { APPS } = require('samsung-tv-control/lib/apps')
+const { Samsung, APPS, KEYS } = require('../lib/index')
+
+/*
+Typescript Example for Dinamic Keys
+import { $enum } from 'ts-enum-util'
+*/
 
 const config = {
   debug: true, // Default: false
@@ -21,6 +24,15 @@ control
     control.getToken(token => {
       console.info('# Response getToken:', token)
     })
+
+    /*
+      Typescript Example for Dinamic Keys
+      const KeyTypes = $enum(KEYS).getValues()
+
+      const getEnumValue = (key: any) => {
+        return KeyTypes[key]
+      }
+    */
 
     // Send key to TV
     control.sendKey(KEYS.KEY_HOME, function(err, res) {
