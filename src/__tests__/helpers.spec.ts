@@ -1,4 +1,4 @@
-import { chr, base64, getVideoId, getMsgInstalledApp, getCommandByKey, getMsgLaunchApp } from '../helpers'
+import { chr, base64, getVideoId, getMsgInstalledApp, getCommandByKey, getMsgLaunchApp, getSendTextCommand } from '../helpers'
 import { KEYS } from '../keys'
 
 describe('helpers', () => {
@@ -37,6 +37,17 @@ describe('helpers', () => {
         DataOfCmd: KEYS.KEY_0,
         Option: 'false',
         TypeOfRemote: 'SendRemoteKey'
+      }
+    })
+  })
+
+  it('should return command getSendTextCommand', () => {
+    expect(getSendTextCommand('Text to be inserted')).toEqual({
+      method: 'ms.remote.control',
+      params: {
+          Cmd: 'VGV4dCB0byBiZSBpbnNlcnRlZA==',// base64 representation of "Text to be inserted"
+          DataOfCmd: 'base64',
+          TypeOfRemote: 'SendInputString'
       }
     })
   })

@@ -1,6 +1,6 @@
 ## 📺 Library for remote control Samsung TV in your NodeJS application.
 
-_Tested with Samsung UE43NU7400_
+_Tested with Samsung UE43NU7400 and UN55NU7100_
 
 [![Build Status](https://travis-ci.org/Toxblh/samsung-tv-control.svg?branch=master)](https://travis-ci.org/Toxblh/samsung-tv-control)
 [![codecov](https://codecov.io/gh/Toxblh/samsung-tv-control/branch/master/graph/badge.svg)](https://codecov.io/gh/Toxblh/samsung-tv-control)
@@ -29,9 +29,7 @@ Also you can use the lib in your Node-RED https://github.com/Toxblh/node-red-con
 You can try [example code](example/index.js)
 
 ```js
-const Samsung = require('samsung-tv-control').default
-const { KEYS } = require('samsung-tv-control/lib/keys')
-const { APPS } = require('samsung-tv-control/lib/apps')
+const { Samsung, KEYS, APPS } = require('samsung-tv-control')
 
 const config = {
   debug: true, // Default: false
