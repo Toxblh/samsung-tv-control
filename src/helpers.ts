@@ -29,6 +29,17 @@ export function getCommandByKey(key: KEYS): Command {
   }
 }
 
+export function getSendTextCommand(text: any) {
+  return {
+    method: 'ms.remote.control',
+    params: {
+        Cmd: base64(text),
+        DataOfCmd: 'base64',
+        TypeOfRemote: 'SendInputString'
+    }
+  }
+}
+
 export function getMsgInstalledApp() {
   return {
     method: 'ms.channel.emit',
