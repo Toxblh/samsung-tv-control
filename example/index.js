@@ -29,6 +29,13 @@ control
       }
     })
 
+    // Send text to focused input on TV
+    control.sendText('Text to be inserted in some focused input', function(err, res) {
+      if (!err) {
+        console.log('# Response sendText', res)
+      }
+    })
+
     // Get all installed apps from TV
     control.getAppsFromTV((err, res) => {
       if (!err) {
