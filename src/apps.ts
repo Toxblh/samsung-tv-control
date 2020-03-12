@@ -6,6 +6,7 @@ export enum APPS {
   'BBC iPlayer' = '3201601007670',
   'BT Sport' = '3201811017267',
   'CHILI' = '3201505002690',
+  'Disney+' = '3201901017640',
   'Facebook Watch' = '11091000000',
   'Gallery' = '3201710015037',
   'Google Play Movies' = '3201601007250',
