@@ -41,22 +41,22 @@
   "dependencies": {
     "node-ssdp": "^4.0.0",
     "request": "^2.88.2",
-    "type-coverage": "^2.4.0",
+    "type-coverage": "^2.4.2",
     "wake_on_lan": "^1.0.0",
-    "ws": "^7.2.1"
+    "ws": "^7.2.3"
   },
   "devDependencies": {
-    "@types/jest": "^25.1.2",
-    "@types/node": "^13.7.1",
+    "@types/jest": "^25.1.4",
+    "@types/node": "^13.9.2",
     "@types/node-ssdp": "^3.3.0",
     "@types/request": "^2.48.4",
     "@types/wake_on_lan": "0.0.27",
-    "@types/ws": "^7.2.1",
+    "@types/ws": "^7.2.3",
     "jest": "^25.1.0",
-    "ts-jest": "^25.2.0",
-    "tslint": "^6.0.0",
-    "typedoc": "^0.16.9",
-    "typescript": "^3.7.5"
+    "ts-jest": "^25.2.1",
+    "tslint": "^6.1.0",
+    "typedoc": "^0.17.1",
+    "typescript": "^3.8.3"
   },
   "jest": {
     "transform": {
