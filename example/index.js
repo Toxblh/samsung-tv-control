@@ -18,7 +18,7 @@ const control = new Samsung(config)
 
 control.turnOn()
 control
-  .isAvaliable()
+  .isAvailable()
   .then(() => {
     // Get token for API
     control.getToken(token => {

@@ -17,7 +17,7 @@ const control = new Samsung(config)
 
 async function main() {
   await control.turnOn()
-  await control.isAvaliable()
+  await control.isAvailable()
 
   let token = await control.getTokenPromise()
   console.log('$$ token:', token)
