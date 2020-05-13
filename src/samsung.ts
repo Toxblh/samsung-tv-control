@@ -121,7 +121,7 @@ class Samsung {
         if (token) {
           resolve(token)
         } else {
-          reject()
+          reject(new Error('Did not receive token from Samsung TV'))
         }
       })
     })
@@ -253,50 +253,55 @@ class Samsung {
     })
   }
 
-  public isAvaliable(): Promise<string> {
+  public isAvailable(): Promise<boolean> {
     return new Promise((resolve, reject) => {
       request.get(
         { url: `http://${this.IP}:8001${this.PORT === 55000 ? '/ms/1.0/' : '/api/v2/'}`, timeout: 3000 },
         (err: Error, res: request.RequestResponse) => {
+          if (err) {
+            return reject(err)
+          }
+
           if (!err && res.statusCode === 200) {
             this.LOGGER.log(
-              'TV is avaliable',
+              'TV is available',
               { request: res.request, body: res.body as string, code: res.statusCode },
-              'isAvaliable'
+              'isAvailable'
             )
-            resolve('TV is avaliable')
-          } else {
-            this.LOGGER.error('TV is avaliable', { err }, 'isAvaliable')
-            reject('No response from TV')
+            resolve(true)
           }
+
+          this.LOGGER.error('TV is not available', { err }, 'isAvailable')
+          resolve(false)
         }
       )
     })
   }
 
-  public isAvaliablePing(): Promise<string> {
-    return new Promise((resolve, reject) => {
+  public isAvailablePing(): Promise<boolean> {
+    return new Promise((resolve) => {
       exec('ping -c 1 -W 1 ' + this.IP, (error, stdout, _) => {
         if (error) {
-          this.LOGGER.error('TV is avaliable', { error }, 'isAvaliable')
-          reject('No response from TV')
+          this.LOGGER.error('TV is not available', { error }, 'isAvailable')
+          // Do not reject since we're testing for the TV to be available
+          resolve(false)
         } else {
-          this.LOGGER.log('TV is avaliable', { stdout }, 'isAvaliable')
-          resolve('TV is avaliable')
+          this.LOGGER.log('TV is available', { stdout }, 'isAvailable')
+          resolve(true)
         }
       })
     })
   }
 
-  public turnOn(): Promise<string> {
+  public turnOn(): Promise<boolean> {
     return new Promise((resolve, reject) => {
       wol.wake(this.MAC, { num_packets: 30 }, (err: Error) => {
         if (err) {
           this.LOGGER.error('Fail turn on', err, 'turnOn')
-          reject('Fail turn on')
+          reject(err)
         } else {
           this.LOGGER.log('WOL sent command to TV', '', 'turnOn')
-          resolve('TV is avaliable')
+          resolve(true)
         }
       })
     })
@@ -356,7 +361,7 @@ class Samsung {
         // this.ws.close()
       }
 
-      // TODO, additional check on avaliable instead of ws.open
+      // TODO, additional check on available instead of ws.open
       // if(data.event == "ms.channel.connect") { _sendCMD() }
     })
 
@@ -408,10 +413,10 @@ class Samsung {
       this._send(
         command,
         (err, res) => {
-          if (!err) {
-            resolve(res)
-          } else {
+          if (err) {
             reject(err)
+          } else {
+            resolve(res)
           }
         },
         eventHandle
@@ -473,10 +478,10 @@ class Samsung {
   private _sendLegacyPromise(key: KEYS) {
     return new Promise((resolve, reject) => {
       this._sendLegacy(key, (err, res) => {
-        if (!err) {
-          resolve(res)
-        } else {
+        if (err) {
           reject(err)
+        } else {
+          resolve(res)
         }
       })
     })
