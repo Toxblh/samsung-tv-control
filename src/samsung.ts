@@ -179,6 +179,36 @@ class Samsung {
     return this._sendPromise(getMsgInstalledApp())
   }
 
+  public openAppByAppIdAndType(
+    appId: string,
+    type: number,
+    done?: (error: Error | { code: string } | null, result: WSData | null) => void
+  ) {
+    this._send(
+      getMsgLaunchApp({app_type: type, appId, icon: '', is_lock: 0, name: ''}),
+      done
+    )
+  }
+
+  public openAppByAppIdAndTypePromise(
+    appId: string,
+    type: number,
+  ) {
+    return new Promise<WSData | null>((resolve, reject) => {
+      this.openAppByAppIdAndType(
+        appId,
+        type,
+        (err, res) => {
+          if (err) {
+            reject(err)
+          }
+
+          resolve(res)
+        }
+      )
+    })
+  }
+
   public openApp(
     appId: string,
     done?: (err: Error | { code: string } | null, res: WSData | string | null) => void
@@ -239,14 +269,14 @@ class Samsung {
         (err, response) => {
           if (!err) {
             this.LOGGER.log(
-              'Link sended',
+              'Link sent',
               { status: response.statusCode, body: response.body, headers: response.headers },
               'openYouTubeLink'
             )
-            resolve('Link sended')
+            resolve('Link sent')
           } else {
             this.LOGGER.error('While send a link, somthing went wrong', { err }, 'openYouTubeLink')
-            reject('While send a link, somthing went wrong')
+            reject(err)
           }
         }
       )
