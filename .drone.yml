@@ -9,7 +9,7 @@ pipeline:
       - /tmp/cache:/cache
 
   install:
-    image: node:8.6.0
+    image: node:lts
     commands:
       - node -v
       - npm -v
@@ -18,13 +18,13 @@ pipeline:
       - yarn install --pure-lockfile
 
   testing:
-    image: node:8.6.0
+    image: node:lts
     group: testing
     commands:
       - yarn run test
 
   lint:
-    image: node:8.6.0
+    image: node:lts
     group: testing
     commands:
       - yarn run lint
