@@ -51,7 +51,7 @@
     "@types/node-ssdp": "^3.3.1",
     "@types/request": "^2.48.5",
     "@types/wake_on_lan": "0.0.28",
-    "@types/ws": "^7.2.6",
+    "@types/ws": "^7.2.7",
     "jest": "^26.4.2",
     "ts-jest": "^26.4.0",
     "tslint": "^6.1.3",
