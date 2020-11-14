@@ -96,14 +96,21 @@ class Samsung {
       }
 
       const token = (res && typeof res !== 'string' && res.data && res.data.token && res.data.token) || null
-      this.LOGGER.log('got token', String(token), 'getToken')
-      this.TOKEN = token || ''
 
-      if (this.SAVE_TOKEN && token) {
-        this._saveTokenToFile(token)
+      if (token !== null) {
+        const sToken = String(token)
+        this.LOGGER.log('got token', sToken, 'getToken')
+        this.TOKEN = sToken
+
+        if (this.SAVE_TOKEN) {
+          this._saveTokenToFile(sToken)
+        }
+
+        done(sToken)
+        return
       }
 
-      done(token)
+      done(null)
     })
   }
 

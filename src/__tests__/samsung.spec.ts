@@ -165,6 +165,8 @@ describe('getToken', () => {
       _token = token
     })
     expect(_token).toBe('1234')
+    // @ts-ignore
+    expect(control.TOKEN).toBe('1234')
   })
 
   it('should return token from response, saveToken is false', async () => {
@@ -183,6 +185,28 @@ describe('getToken', () => {
       _token = token
     })
     expect(_token).toBe('1234')
+    // @ts-ignore
+    expect(control.TOKEN).toBe('1234')
+  })
+
+  it('should return token from response token is number', async () => {
+    let _token
+
+    jest.spyOn(fs, 'readFileSync').mockImplementation(() => '')
+
+    Samsung.prototype.sendKey = jest.fn().mockImplementation((_, cb) => {
+      cb(null, { data: { token: 1234 } })
+    })
+
+    const config = { ip: '192.168.1.2', mac: '123456789ABC' }
+    let control = new Samsung(config)
+
+    await control.getToken((token) => {
+      _token = token
+    })
+    expect(_token).toBe('1234')
+    // @ts-ignore
+    expect(control.TOKEN).toBe('1234')
   })
 
   it('should return null, empty response', async () => {
@@ -201,6 +225,8 @@ describe('getToken', () => {
       _token = token
     })
     expect(_token).toBe(null)
+    // @ts-ignore
+    expect(control.TOKEN).toBe('')
   })
 
   it('should return saved token from file', async () => {
@@ -215,5 +241,7 @@ describe('getToken', () => {
       _token = token
     })
     expect(_token).toBe('test')
+    // @ts-ignore
+    expect(control.TOKEN).toBe('test')
   })
 })
