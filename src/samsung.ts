@@ -15,7 +15,7 @@ import {
   getMsgInstalledApp,
   getMsgLaunchApp,
   getCommandByKey,
-  getSendTextCommand
+  getSendTextCommand,
 } from './helpers'
 
 class Samsung {
@@ -57,15 +57,7 @@ class Samsung {
     this.LOGGER.log('config', config, 'constructor')
 
     if (this.SAVE_TOKEN) {
-      try {
-        fs.accessSync(this.TOKEN_FILE, fs.constants.F_OK)
-        console.log('File suss!')
-        const fileData = fs.readFileSync(this.TOKEN_FILE)
-        this.TOKEN = fileData.toString()
-      } catch (err) {
-        console.log('File error!')
-        this.LOGGER.error('if (this.SAVE_TOKEN)', err, 'constructor')
-      }
+      this.TOKEN = this._getTokenFromFile() || ''
     }
 
     this.WS_URL = `${this.PORT === 8001 ? 'ws' : 'wss'}://${this.IP}:${
@@ -83,7 +75,7 @@ class Samsung {
         PORT: this.PORT,
         SAVE_TOKEN: this.SAVE_TOKEN,
         TOKEN: this.TOKEN,
-        WS_URL: this.WS_URL
+        WS_URL: this.WS_URL,
       },
       'constructor'
     )
@@ -101,23 +93,23 @@ class Samsung {
       if (err) {
         this.LOGGER.error('after sendKey', err, 'getToken')
         throw new Error('Error send Key')
-      } else {
-        const token = (res && typeof res !== 'string' && res.data && res.data.token && res.data.token) || null
-        this.LOGGER.log('got token', String(token), 'getToken')
-        this.TOKEN = token || ''
-        if (this.SAVE_TOKEN && token) {
-          this._saveTokenToFile(token)
-          done(token)
-        } else {
-          done(null)
-        }
       }
+
+      const token = (res && typeof res !== 'string' && res.data && res.data.token && res.data.token) || null
+      this.LOGGER.log('got token', String(token), 'getToken')
+      this.TOKEN = token || ''
+
+      if (this.SAVE_TOKEN && token) {
+        this._saveTokenToFile(token)
+      }
+
+      done(token)
     })
   }
 
   public getTokenPromise(): Promise<string> {
     return new Promise((resolve, reject) => {
-      this.getToken(token => {
+      this.getToken((token) => {
         if (token) {
           resolve(token)
         } else {
@@ -184,28 +176,18 @@ class Samsung {
     type: number,
     done?: (error: Error | { code: string } | null, result: WSData | null) => void
   ) {
-    this._send(
-      getMsgLaunchApp({app_type: type, appId, icon: '', is_lock: 0, name: ''}),
-      done
-    )
+    this._send(getMsgLaunchApp({ app_type: type, appId, icon: '', is_lock: 0, name: '' }), done)
   }
 
-  public openAppByAppIdAndTypePromise(
-    appId: string,
-    type: number,
-  ) {
+  public openAppByAppIdAndTypePromise(appId: string, type: number) {
     return new Promise<WSData | null>((resolve, reject) => {
-      this.openAppByAppIdAndType(
-        appId,
-        type,
-        (err, res) => {
-          if (err) {
-            reject(err)
-          }
-
-          resolve(res)
+      this.openAppByAppIdAndType(appId, type, (err, res) => {
+        if (err) {
+          reject(err)
         }
-      )
+
+        resolve(res)
+      })
     })
   }
 
@@ -224,7 +206,7 @@ class Samsung {
       }
 
       const apps: App[] = res && typeof res !== 'string' && res.data && res.data.data ? res.data.data : []
-      const app = apps.find(appIter => appIter.appId === appId)
+      const app = apps.find((appIter) => appIter.appId === appId)
 
       if (!app) {
         this.LOGGER.error('This APP is not installed', { appId, app }, 'openApp getAppsFromTV')
@@ -261,10 +243,10 @@ class Samsung {
         {
           headers: {
             'Content-Type': 'text/plain',
-            'Content-Length': Buffer.byteLength(videoId)
+            'Content-Length': Buffer.byteLength(videoId),
           },
           timeout: 10000,
-          body: videoId
+          body: videoId,
         },
         (err, response) => {
           if (!err) {
@@ -564,6 +546,19 @@ class Samsung {
     } catch (err) {
       console.log('File error!')
       this.LOGGER.error('catch fil esave', err, '_saveTokenToFile')
+    }
+  }
+
+  private _getTokenFromFile(): string | null {
+    try {
+      fs.accessSync(this.TOKEN_FILE, fs.constants.F_OK)
+      console.log('File suss!')
+      const fileData = fs.readFileSync(this.TOKEN_FILE)
+      return fileData.toString()
+    } catch (err) {
+      console.log('File error!')
+      this.LOGGER.error('if (this.SAVE_TOKEN)', err, 'constructor')
+      return null
     }
   }
 }
