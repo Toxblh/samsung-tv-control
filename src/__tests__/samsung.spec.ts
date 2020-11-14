@@ -57,7 +57,7 @@ describe('Tests 8001', () => {
     expect(control).toHaveProperty('LOGGER.DEBUG', config.debug)
     expect(control).toHaveProperty(
       'WS_URL',
-      'ws://192.168.1.2:8001/api/v2/channels/samsung.remote.control?name=Tm9kZUpTIFJlbW90ZQ== &token=12345678'
+      'ws://192.168.1.2:8001/api/v2/channels/samsung.remote.control?name=Tm9kZUpTIFJlbW90ZQ==&token=12345678'
     )
   })
 })

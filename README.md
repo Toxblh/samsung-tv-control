@@ -36,7 +36,7 @@ const config = {
   debug: true, // Default: false
   ip: '192.168.1.2',
   mac: '123456789ABC',
-  name: 'NodeJS-Test', // Default: NodeJS
+  nameApp: 'NodeJS-Test', // Default: NodeJS
   port: 8001, // Default: 8002
   token: '12345678',
 }
