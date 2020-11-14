@@ -354,10 +354,6 @@ class Samsung {
 
       this.LOGGER.log('data: ', JSON.stringify(data, null, 2), 'ws.on message')
 
-      if (done) {
-        done(null, data)
-      }
-
       if (done && (data.event === command.params.event || data.event === eventHandle)) {
         this.LOGGER.log('if correct event', JSON.stringify(data, null, 2), 'ws.on message')
         done(null, data)
