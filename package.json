@@ -39,7 +39,9 @@
   },
   "homepage": "https://github.com/Toxblh/samsung-tv-remote#readme",
   "dependencies": {
+    "@swc/jest": "^0.1.2",
     "node-ssdp": "^4.0.0",
+    "regenerator-runtime": "^0.13.7",
     "request": "^2.88.2",
     "type-coverage": "^2.14.5",
     "wake_on_lan": "^1.0.0",
@@ -60,7 +62,7 @@
   },
   "jest": {
     "transform": {
-      "^.+\\.tsx?$": "ts-jest"
+      "^.+\\.tsx?$": "@swc/jest"
     },
     "moduleFileExtensions": [
       "ts",

@@ -472,6 +472,13 @@
     "@types/yargs" "^15.0.0"
     chalk "^4.0.0"
 
+"@node-rs/helper@^0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@node-rs/helper/-/helper-0.4.0.tgz#deec7d95aafa90535980a51cbd5336b8bbefe93a"
+  integrity sha512-fSyHEXmlt/FueKqAYiGFCnkohnQBMQwUr6VYPeZEeVBAzQzhioS1WaRe2fSpOuRKIimCQEvxhQ6fwsYxYakfGA==
+  dependencies:
+    tslib "^2.0.1"
+
 "@sinonjs/commons@^1.7.0":
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/@sinonjs/commons/-/commons-1.7.0.tgz#f90ffc52a2e519f018b13b6c4da03cbff36ebed6"
@@ -485,6 +492,39 @@
   integrity sha512-MZPUxrmFubI36XS1DI3qmI0YdN1gks62JtFZvxR67ljjSNCeK6U08Zx4msEWOXuofgqUt6zPHSi1H9fbjR/NRA==
   dependencies:
     "@sinonjs/commons" "^1.7.0"
+
+"@swc/core-darwin@^1.2.39":
+  version "1.2.39"
+  resolved "https://registry.yarnpkg.com/@swc/core-darwin/-/core-darwin-1.2.39.tgz#a3add854b77a08bacca7c65ea01403422eb8afeb"
+  integrity sha512-JRZc161lvKML6KfbOkzaRCQnRLTXq4cJ5LnvI6jpdBZL+R5u4IL/RqSkQKV5/2+zEzmgA4ooLH6NLE0Bo19IzA==
+
+"@swc/core-linux@^1.2.39":
+  version "1.2.39"
+  resolved "https://registry.yarnpkg.com/@swc/core-linux/-/core-linux-1.2.39.tgz#4f1ecee3ea52267488bcd758c7f0185bae2c17a7"
+  integrity sha512-ZRZ78Ou8gWs2sPl4Ummh7lD479l3KNQVt9pXELD2c/o1O/WkgFLE8Vv9TUZeqANLMWrlMPzQXcbevWkx6Wqg4g==
+
+"@swc/core-win32@^1.2.39":
+  version "1.2.39"
+  resolved "https://registry.yarnpkg.com/@swc/core-win32/-/core-win32-1.2.39.tgz#278a726e9c9cd95d573b870f508520f5812fc489"
+  integrity sha512-iu5gu1aaoIyvkAW7dV3LPJJQlmWniHVtHe59mSLKFglQ14n34sOIwb/I3TDZ0SXSgMfBZaTlw2WqCox/gGUBsw==
+
+"@swc/core@^1.2.30":
+  version "1.2.39"
+  resolved "https://registry.yarnpkg.com/@swc/core/-/core-1.2.39.tgz#b8d2821311de3939027e1292289cf62b742dc4bc"
+  integrity sha512-BohrjkWI+BrPDAwTxfvFomnK7cDi/4G3GLof+eIgnHxUg9cZnDesTVZg6put9UWXs5STkiwGWPDcBp3rdyqExw==
+  dependencies:
+    "@node-rs/helper" "^0.4.0"
+  optionalDependencies:
+    "@swc/core-darwin" "^1.2.39"
+    "@swc/core-linux" "^1.2.39"
+    "@swc/core-win32" "^1.2.39"
+
+"@swc/jest@^0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@swc/jest/-/jest-0.1.2.tgz#5195f2439c60430dff661b4a7b5c904483791eb7"
+  integrity sha512-14ju3wkSsTeKFivYzH222j4/y5UQWY5Wk9fOvPit6wyuZNyo4fP6AVYWwVzogmqQNe06IMs+aPJGQ3FbErRZjQ==
+  dependencies:
+    "@swc/core" "^1.2.30"
 
 "@types/babel__core@^7.0.0":
   version "7.1.9"
@@ -3137,6 +3177,11 @@ rechoir@^0.6.2:
   dependencies:
     resolve "^1.1.6"
 
+regenerator-runtime@^0.13.7:
+  version "0.13.7"
+  resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.13.7.tgz#cac2dacc8a1ea675feaabaeb8ae833898ae46f55"
+  integrity sha512-a54FxoJDIr27pgf7IgeQGxmqUNYrcV338lf/6gH456HZ/PhX+5BcwHXG9ajESmwe6WRO0tAzRUrRmNONWgkrew==
+
 regex-not@^1.0.0, regex-not@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/regex-not/-/regex-not-1.0.2.tgz#1f4ece27e00b0b65e0247a6810e6a85d83a5752c"
@@ -3730,6 +3775,11 @@ tslib@^1.8.1:
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.10.0.tgz#c3c19f95973fb0a62973fb09d90d961ee43e5c8a"
   integrity sha512-qOebF53frne81cf0S9B41ByenJ3/IuH8yJKngAX35CmiZySA0khhkovshKK+jGCaMnVomla7gVlIcc3EvKPbTQ==
+
+tslib@^2.0.1:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.0.3.tgz#8e0741ac45fc0c226e58a17bfc3e64b9bc6ca61c"
+  integrity sha512-uZtkfKblCEQtZKBF6EBXVZeQNl82yqtDQdv+eck8u7tdPxjLu2/lp5/uPW+um2tpuxINHWy3GhiccY7QgEaVHQ==
 
 tslint@^6.1.3:
   version "6.1.3"
