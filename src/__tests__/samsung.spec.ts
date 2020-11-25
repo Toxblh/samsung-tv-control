@@ -244,4 +244,59 @@ describe('getToken', () => {
     // @ts-ignore
     expect(control.TOKEN).toBe('test')
   })
+
+  it('should return token third times', async () => {
+    let _token
+    let _token2
+    let _token3
+
+    jest.spyOn(fs, 'readFileSync').mockImplementation(() => 'test')
+
+    const config = { ip: '192.168.1.2', mac: '123456789ABC', token: 'token' }
+    let control = new Samsung(config)
+
+    await control.getToken((token) => {
+      _token = token
+    })
+    expect(_token).toBe('token')
+    // @ts-ignore
+    expect(control.TOKEN).toBe('token')
+
+    await control.getToken((token) => {
+      _token2 = token
+    })
+    expect(_token2).toBe('token')
+    // @ts-ignore
+    expect(control.TOKEN).toBe('token')
+
+
+    await control.getToken((token) => {
+      _token3 = token
+    })
+    expect(_token3).toBe('token')
+    // @ts-ignore
+    expect(control.TOKEN).toBe('token')
+  })
+
+  it('should return saved token from file Promise', async () => {
+    let _token
+
+    jest.spyOn(fs, 'readFileSync').mockImplementation(() => 'test')
+
+    const config = { ip: '192.168.1.2', mac: '123456789ABC', saveToken: true }
+    let control = new Samsung(config)
+
+    _token = await control.getTokenPromise()
+    expect(_token).toBe('test')
+    // @ts-ignore
+    expect(control.TOKEN).toBe('test')
+  })
+
+  it('should return saved token from file Promise', async () => {
+    jest.spyOn(fs, 'readFileSync').mockImplementation(() => 'test')
+    const config = { ip: '192.168.1.2', mac: '123456789ABC', saveToken: true }
+    let control = new Samsung(config)
+
+    expect(control.getTokenPromise).rejects.toBe('Did not receive token from Samsung TV');
+  })
 })

@@ -77,7 +77,7 @@ class Samsung {
   public getToken(done: (token: string | null) => void) {
     this.LOGGER.log('getToken', '')
 
-    if (this.SAVE_TOKEN && this.TOKEN !== 'null' && this.TOKEN !== '') {
+    if (this.TOKEN !== null && this.TOKEN !== '') {
       done(this.TOKEN)
       return
     }
