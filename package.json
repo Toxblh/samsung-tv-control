@@ -46,7 +46,7 @@
     "ws": "^7.4.0"
   },
   "devDependencies": {
-    "@types/jest": "^26.0.15",
+    "@types/jest": "^26.0.16",
     "@types/node": "^14.14.10",
     "@types/node-ssdp": "^3.3.1",
     "@types/request": "^2.48.5",
