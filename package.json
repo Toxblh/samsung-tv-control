@@ -39,7 +39,7 @@
   },
   "homepage": "https://github.com/Toxblh/samsung-tv-remote#readme",
   "dependencies": {
-    "node-ssdp": "^4.0.0",
+    "node-ssdp": "^4.0.1",
     "request": "^2.88.2",
     "type-coverage": "^2.14.6",
     "wake_on_lan": "^1.0.0",
