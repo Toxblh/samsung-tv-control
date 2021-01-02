@@ -609,10 +609,10 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-13.1.8.tgz#1d590429fe8187a02707720ecf38a6fe46ce294b"
   integrity sha512-6XzyyNM9EKQW4HKuzbo/CkOIjn/evtCmsU+MUM1xDfJ+3/rNjBttM1NgN7AOQvN6tP1Sl1D1PIKMreTArnxM9A==
 
-"@types/node@^14.14.17":
-  version "14.14.17"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.17.tgz#29fab92f3986c0e379968ad3c2043683d8020dbb"
-  integrity sha512-G0lD1/7qD60TJ/mZmhog76k7NcpLWkPVGgzkRy3CTlnFu4LUQh5v2Wa661z6vnXmD8EQrnALUyf0VRtrACYztw==
+"@types/node@^14.14.19":
+  version "14.14.19"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.19.tgz#5135176a8330b88ece4e9ab1fdcfc0a545b4bab4"
+  integrity sha512-4nhBPStMK04rruRVtVc6cDqhu7S9GZai0fpXgPXrFpcPX6Xul8xnrjSdGB4KPBVYG/R5+fXWdCM8qBoiULWGPQ==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"
@@ -3867,10 +3867,10 @@ typedoc-default-themes@0.12.0:
   resolved "https://registry.yarnpkg.com/typedoc-default-themes/-/typedoc-default-themes-0.12.0.tgz#42451948e55a148c1350eb2aa68829be5c2b06b3"
   integrity sha512-0hHBxwmfxE0rkIslOiO39fJyYwaScQEhUIxcpqx3uS1BL3zhFW5oQfUaPx2cv2XLL/GXhYFxhdFLoVmNptbxEQ==
 
-typedoc@^0.20.7:
-  version "0.20.7"
-  resolved "https://registry.yarnpkg.com/typedoc/-/typedoc-0.20.7.tgz#627bf640786e79b93dccfdb9c320892e1c58767a"
-  integrity sha512-HMfPatgQiEf71pvSqQRhs9Myri7Yczg3yMxlPTwNnHXb0Qw8vYE4ZWCe/NEgBCwvBTvj/tDAtHFk9/hIBYxOJw==
+typedoc@^0.20.9:
+  version "0.20.9"
+  resolved "https://registry.yarnpkg.com/typedoc/-/typedoc-0.20.9.tgz#e14fe176e2e53b756f9de6bc04bdffc959f11296"
+  integrity sha512-GCaE9Hn+VFY2i9wBxFbCv/KZCgHw4+6hiYRdJ0y2DudcWvpgLeCIBJYP1e70MtKCZzs4FT+ydLxInr/hyXrY4Q==
   dependencies:
     colors "^1.4.0"
     fs-extra "^9.0.1"
