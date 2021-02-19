@@ -55,6 +55,16 @@ control
       }
     })
 
+    // Get app icon by iconPath which you can get from getAppsFromTV
+    control.getAppIcon(
+      `/opt/share/webappservice/apps_icon/FirstScreen/${APPS.YouTube}/250x250.png`,
+      (err, res) => {
+        if (!err) {
+          console.log('# Response getAppIcon', res)
+        }
+      }
+    )
+
     // Open app by appId which you can get from getAppsFromTV
     control.openApp(APPS.YouTube, (err, res) => {
       if (!err) {
