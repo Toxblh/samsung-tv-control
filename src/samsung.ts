@@ -13,6 +13,7 @@ import {
   chr,
   getVideoId,
   getMsgInstalledApp,
+  getMsgAppIcon,
   getMsgLaunchApp,
   getCommandByKey,
   getSendTextCommand,
@@ -170,6 +171,14 @@ class Samsung {
 
   public getAppsFromTVPromise(): Promise<WSData | null> {
     return this._sendPromise(getMsgInstalledApp())
+  }
+
+  public getAppIcon(iconPath:string, done?: (err: Error | { code: string } | null, res: WSData | string | null) => void) {
+    return this._send(getMsgAppIcon(iconPath), done)
+  }
+
+  public getAppIconPromise(iconPath: string): Promise<WSData | null> {
+    return this._sendPromise(getMsgAppIcon(iconPath))
   }
 
   public openAppByAppIdAndType(
