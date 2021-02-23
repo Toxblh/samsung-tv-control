@@ -1669,10 +1669,10 @@ growly@^1.3.0:
   resolved "https://registry.yarnpkg.com/growly/-/growly-1.3.0.tgz#f10748cbe76af964b7c96c93c6bcc28af120c081"
   integrity sha1-8QdIy+dq+WS3yWyTxrzCivEgwIE=
 
-handlebars@^4.7.6:
-  version "4.7.6"
-  resolved "https://registry.yarnpkg.com/handlebars/-/handlebars-4.7.6.tgz#d4c05c1baf90e9945f77aa68a7a219aa4a7df74e"
-  integrity sha512-1f2BACcBfiwAfStCKZNrUCgqNZkGsAT7UM3kkYtXuLo0KnaVfjKOyf7PRzB6++aK9STyT1Pd2ZCPe3EGOXleXA==
+handlebars@^4.7.7:
+  version "4.7.7"
+  resolved "https://registry.yarnpkg.com/handlebars/-/handlebars-4.7.7.tgz#9ce33416aad02dbd6c8fafa8240d5d98004945a1"
+  integrity sha512-aAcXm5OAfE/8IXkcZvCepKU3VzW1/39Fb5ZuqMtgI/hT8X2YgoMvBY5dLhq/cpOvw7Lk1nK/UF71aLG/ZnVYRA==
   dependencies:
     minimist "^1.2.5"
     neo-async "^2.6.0"
@@ -2620,7 +2620,7 @@ lodash.sortby@^4.7.0:
   resolved "https://registry.yarnpkg.com/lodash.sortby/-/lodash.sortby-4.7.0.tgz#edd14c824e2cc9c1e0b0a1b42bb5210516a42438"
   integrity sha1-7dFMgk4sycHgsKG0K7UhBRakJDg=
 
-lodash@4.x, lodash@^4.17.20:
+lodash@4.x:
   version "4.17.20"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.20.tgz#b44a9b6297bcb698f1c51a3545a2b3b368d59c52"
   integrity sha512-PlhdFcillOINfeV7Ni6oF1TAEayyZBoZ8bcshTHqOYJYlrqzRK5hagpagky5o4HfCzzd1TRkXPMFq6cKk9rGmA==
@@ -2629,6 +2629,11 @@ lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15:
   version "4.17.19"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.19.tgz#e48ddedbe30b3321783c5b4301fbd353bc1e4a4b"
   integrity sha512-JNvd8XER9GQX0v2qJgsaN/mzFCNA5BRe/j8JN9d+tWyGLSodKQHKFicdwNYzWwI3wjRnaKPsGj1XkBjx/F96DQ==
+
+lodash@^4.17.21:
+  version "4.17.21"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
+  integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
 
 lru-cache@^5.1.1:
   version "5.1.1"
@@ -3801,23 +3806,23 @@ type-check@~0.3.2:
   dependencies:
     prelude-ls "~1.1.2"
 
-type-coverage-core@^2.15.1:
-  version "2.15.1"
-  resolved "https://registry.yarnpkg.com/type-coverage-core/-/type-coverage-core-2.15.1.tgz#a0e7bc279be56f1a44d1702ddef5285cc3190f0f"
-  integrity sha512-dwdp0nnbMre0cw3H2/pXkqtLixtHrr+6JcQSASuVbDUrvWrgUcYIDccUdrsg6p2xeQmHdfaqAh4TsX8/aYFL3A==
+type-coverage-core@^2.16.0:
+  version "2.16.0"
+  resolved "https://registry.yarnpkg.com/type-coverage-core/-/type-coverage-core-2.16.0.tgz#b51559470950c385852627c7a5fc656f6a7ab60e"
+  integrity sha512-vTwFbXI+V1EKg0J0cM3/m604iDp688awwU7KdLGt4smgrTnykyA621GdShXFwYLhr7DfQzYyCsxLhd6n+eRbRQ==
   dependencies:
     glob "7"
     minimatch "3"
     tslib "1 || 2"
     tsutils "3"
 
-type-coverage@^2.15.1:
-  version "2.15.1"
-  resolved "https://registry.yarnpkg.com/type-coverage/-/type-coverage-2.15.1.tgz#157e5000a65048c7808e36837a0eedf9a5039cba"
-  integrity sha512-HvqD19WtsUlmbSCY3De/HcKUyohjgtQoNHdlVjed8WcySGVgEjGpjF4pZUiLZDVsZf3+VwNvkHoLewLEWXWdQQ==
+type-coverage@^2.16.0:
+  version "2.16.0"
+  resolved "https://registry.yarnpkg.com/type-coverage/-/type-coverage-2.16.0.tgz#e52f749b813228e1ad614d3be8c8c493958c712c"
+  integrity sha512-nETK5kEGCGm8DTiYNcvbUpi4XUQeO4Z/eFxwERqQcsdSAgadUB3nD1xSSBV0PFqM17+QcsDuKfmNnXeVNsPTNw==
   dependencies:
     minimist "1"
-    type-coverage-core "^2.15.1"
+    type-coverage-core "^2.16.0"
 
 type-detect@4.0.8:
   version "4.0.8"
@@ -3846,15 +3851,15 @@ typedoc-default-themes@^0.12.7:
   resolved "https://registry.yarnpkg.com/typedoc-default-themes/-/typedoc-default-themes-0.12.7.tgz#d44f68d40a3e90a19b5ea7be4cc6ed949afe768d"
   integrity sha512-0XAuGEqID+gon1+fhi4LycOEFM+5Mvm2PjwaiVZNAzU7pn3G2DEpsoXnFOPlLDnHY6ZW0BY0nO7ur9fHOFkBLQ==
 
-typedoc@^0.20.27:
-  version "0.20.27"
-  resolved "https://registry.yarnpkg.com/typedoc/-/typedoc-0.20.27.tgz#66391dfe4c4d1add4a4ef95a8f19b6bc62fe3389"
-  integrity sha512-Y61T2wEpBo6x0t0zeMNH6CH0n2Jt8E1IHObcK4fGT9nK9Zq6+Rurf0A9WqVbhRmkGpu1wBsGl+4kSJdIN+AOtg==
+typedoc@^0.20.28:
+  version "0.20.28"
+  resolved "https://registry.yarnpkg.com/typedoc/-/typedoc-0.20.28.tgz#6c454904d864dd43a2de9228c44b91e3c53d98ce"
+  integrity sha512-8j0T8u9FuyDkoe+M/3cyoaGJSVgXCY9KwVoo7TLUnmQuzXwqH+wkScY530ZEdK6G39UZ2LFTYPIrL5eykWjx6A==
   dependencies:
     colors "^1.4.0"
     fs-extra "^9.1.0"
-    handlebars "^4.7.6"
-    lodash "^4.17.20"
+    handlebars "^4.7.7"
+    lodash "^4.17.21"
     lunr "^2.3.9"
     marked "^2.0.0"
     minimatch "^3.0.0"
