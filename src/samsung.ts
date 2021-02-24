@@ -384,7 +384,7 @@ class Samsung {
     ws.on('error', (err: Error & { code: string }) => {
       let errorMsg = ''
       if (err.code === 'EHOSTUNREACH' || err.code === 'ECONNREFUSED') {
-        errorMsg = 'TV is off or unavalible'
+        errorMsg = 'TV is off or unavailable'
       }
       console.error(errorMsg)
       this.LOGGER.error(errorMsg, err, 'ws.on error')
