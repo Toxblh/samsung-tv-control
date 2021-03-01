@@ -1,37 +1,53 @@
-pipeline:
+kind: pipeline
+type: docker
+name: build
 
-#   restore-cache:
-#     image: drillster/drone-volume-cache
-#     restore: true
-#     mount:
-#       - ./.yarn-cache
-#       - ./node_modules
-#     volumes:
-#       - /tmp/cache:/cache
+steps:
+- name: restore-cache
+  image: drillster/drone-volume-cache
+  volumes:
+  - name: cache
+    path: /cache
+  settings:
+    restore: true
+    mount:
+      - ./node_modules
 
-  install:
-    image: node:lts
-    commands:
-      - node -v
-      - npm -v
-      - yarn --version
-      - yarn config set cache-folder .yarn-cache
-      - yarn install --pure-lockfile
+- name: install
+  image: node:lts
+  commands:
+    - node -v
+    - npm -v
+    - yarn --version
+    - yarn config set cache-folder .yarn-cache
+    - yarn install --pure-lockfile
 
-  testing:
-    image: node:lts
-    group: testing
-    commands:
-      - yarn test -- --colors --forceExit
+- name: testing
+  image: node:lts
+  commands:
+    - yarn test -- --colors --forceExit
 
-  coverage:
-    image: node:lts
-    group: testing
-    commands:
-      - yarn coverage
+- name: coverage
+  image: node:lts
+  commands:
+    - yarn coverage
 
-  build:
-    image: node:lts
-    group: build
-    commands:
-      - yarn build
+- name: build
+  image: node:lts
+  commands:
+    - yarn build
+
+- name: rebuild-cache
+  image: drillster/drone-volume-cache
+  volumes:
+  - name: cache
+    path: /cache
+  settings:
+    rebuild: true
+    mount:
+      - ./node_modules
+
+volumes:
+  - name: cache
+    host:
+      path: /tmp/cache
