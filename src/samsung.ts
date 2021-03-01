@@ -120,6 +120,11 @@ class Samsung {
       })
     })
   }
+  
+  public setToken(token: string) {
+    this.TOKEN = token
+    this.WS_URL = this._getWSUrl()
+  }
 
   public sendKey(
     key: KEYS,
