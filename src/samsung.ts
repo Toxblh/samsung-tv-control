@@ -83,7 +83,7 @@ class Samsung {
       return
     }
 
-    this.sendKey(KEYS.KEY_HOME, (err, res) => {
+    this.sendKey('NON_EXISTING_KEY_GET_TOKEN', (err, res) => {
       if (err) {
         this.LOGGER.error('after sendKey', err, 'getToken')
         throw new Error('Error send Key')
