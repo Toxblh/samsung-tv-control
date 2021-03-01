@@ -13,9 +13,10 @@ import {
   chr,
   getVideoId,
   getMsgInstalledApp,
+  getMsgAppIcon,
   getMsgLaunchApp,
   getCommandByKey,
-  getSendTextCommand
+  getSendTextCommand,
 } from './helpers'
 
 class Samsung {
@@ -30,8 +31,6 @@ class Samsung {
   private SAVE_TOKEN: boolean
   private TOKEN_FILE = path.join(__dirname, 'token.txt')
   private WS_URL: string
-  private ws: WebSocket | null = null
-  private wsTimeout: NodeJS.Timeout | null = null
 
   constructor(config: Configuration) {
     if (!config.ip) {
@@ -57,22 +56,9 @@ class Samsung {
     this.LOGGER.log('config', config, 'constructor')
 
     if (this.SAVE_TOKEN) {
-      try {
-        fs.accessSync(this.TOKEN_FILE, fs.constants.F_OK)
-        console.log('File suss!')
-        const fileData = fs.readFileSync(this.TOKEN_FILE)
-        this.TOKEN = fileData.toString()
-      } catch (err) {
-        console.log('File error!')
-        this.LOGGER.error('if (this.SAVE_TOKEN)', err, 'constructor')
-      }
+      this.TOKEN = this._getTokenFromFile() || ''
     }
-
-    this.WS_URL = `${this.PORT === 8001 ? 'ws' : 'wss'}://${this.IP}:${
-      this.PORT
-    }/api/v2/channels/samsung.remote.control?name=${this.NAME_APP}${
-      this.TOKEN !== '' ? ` &token=${this.TOKEN}` : ''
-    }`
+    this.WS_URL = this._getWSUrl()
 
     this.LOGGER.log(
       'internal config',
@@ -83,7 +69,7 @@ class Samsung {
         PORT: this.PORT,
         SAVE_TOKEN: this.SAVE_TOKEN,
         TOKEN: this.TOKEN,
-        WS_URL: this.WS_URL
+        WS_URL: this.WS_URL,
       },
       'constructor'
     )
@@ -101,23 +87,31 @@ class Samsung {
       if (err) {
         this.LOGGER.error('after sendKey', err, 'getToken')
         throw new Error('Error send Key')
-      } else {
-        const token = (res && typeof res !== 'string' && res.data && res.data.token && res.data.token) || null
-        this.LOGGER.log('got token', String(token), 'getToken')
-        this.TOKEN = token || ''
-        if (this.SAVE_TOKEN && token) {
-          this._saveTokenToFile(token)
-          done(token)
-        } else {
-          done(null)
-        }
       }
+
+      const token = (res && typeof res !== 'string' && res.data && res.data.token && res.data.token) || null
+
+      if (token !== null) {
+        const sToken = String(token)
+        this.LOGGER.log('got token', sToken, 'getToken')
+        this.TOKEN = sToken
+        this.WS_URL = this._getWSUrl()
+
+        if (this.SAVE_TOKEN) {
+          this._saveTokenToFile(sToken)
+        }
+
+        done(sToken)
+        return
+      }
+
+      done(null)
     })
   }
 
   public getTokenPromise(): Promise<string> {
     return new Promise((resolve, reject) => {
-      this.getToken(token => {
+      this.getToken((token) => {
         if (token) {
           resolve(token)
         } else {
@@ -125,6 +119,11 @@ class Samsung {
         }
       })
     })
+  }
+  
+  public setToken(token: string) {
+    this.TOKEN = token
+    this.WS_URL = this._getWSUrl()
   }
 
   public sendKey(
@@ -179,33 +178,31 @@ class Samsung {
     return this._sendPromise(getMsgInstalledApp())
   }
 
+  public getAppIcon(iconPath:string, done?: (err: Error | { code: string } | null, res: WSData | string | null) => void) {
+    return this._send(getMsgAppIcon(iconPath), done)
+  }
+
+  public getAppIconPromise(iconPath: string): Promise<WSData | null> {
+    return this._sendPromise(getMsgAppIcon(iconPath))
+  }
+
   public openAppByAppIdAndType(
     appId: string,
     type: number,
     done?: (error: Error | { code: string } | null, result: WSData | null) => void
   ) {
-    this._send(
-      getMsgLaunchApp({app_type: type, appId, icon: '', is_lock: 0, name: ''}),
-      done
-    )
+    this._send(getMsgLaunchApp({ app_type: type, appId, icon: '', is_lock: 0, name: '' }), done)
   }
 
-  public openAppByAppIdAndTypePromise(
-    appId: string,
-    type: number,
-  ) {
+  public openAppByAppIdAndTypePromise(appId: string, type: number) {
     return new Promise<WSData | null>((resolve, reject) => {
-      this.openAppByAppIdAndType(
-        appId,
-        type,
-        (err, res) => {
-          if (err) {
-            reject(err)
-          }
-
-          resolve(res)
+      this.openAppByAppIdAndType(appId, type, (err, res) => {
+        if (err) {
+          reject(err)
         }
-      )
+
+        resolve(res)
+      })
     })
   }
 
@@ -224,7 +221,7 @@ class Samsung {
       }
 
       const apps: App[] = res && typeof res !== 'string' && res.data && res.data.data ? res.data.data : []
-      const app = apps.find(appIter => appIter.appId === appId)
+      const app = apps.find((appIter) => appIter.appId === appId)
 
       if (!app) {
         this.LOGGER.error('This APP is not installed', { appId, app }, 'openApp getAppsFromTV')
@@ -261,10 +258,10 @@ class Samsung {
         {
           headers: {
             'Content-Type': 'text/plain',
-            'Content-Length': Buffer.byteLength(videoId)
+            'Content-Length': Buffer.byteLength(videoId),
           },
           timeout: 10000,
-          body: videoId
+          body: videoId,
         },
         (err, response) => {
           if (!err) {
@@ -345,7 +342,7 @@ class Samsung {
    * If you don't need to keep connection, you can to close immediately
    */
   public closeConnection() {
-    this.wsClose()
+    // backward compatibility
   }
 
   private _send(
@@ -353,33 +350,23 @@ class Samsung {
     done?: (err: null | (Error & { code: string }), res: WSData | null) => void,
     eventHandle?: string
   ) {
-    if (!this.ws) {
-      this.ws = new WebSocket(this.WS_URL, { rejectUnauthorized: false })
-    } else {
-      this.wsKeepAlive()
-    }
+    const ws = new WebSocket(this.WS_URL, { rejectUnauthorized: false })
 
     this.LOGGER.log('command', command, '_send')
     this.LOGGER.log('wsUrl', this.WS_URL, '_send')
 
-    this.ws.on('open', () => {
+    ws.on('open', () => {
       if (this.PORT === 8001) {
-        setTimeout(() => this.ws && this.ws.send(JSON.stringify(command)), 1000)
+        setTimeout(() => ws.send(JSON.stringify(command)), 1000)
       } else {
-        if (this.ws) {
-          this.ws.send(JSON.stringify(command))
-        }
+        ws.send(JSON.stringify(command))
       }
     })
 
-    this.ws.on('message', (message: string) => {
+    ws.on('message', (message: string) => {
       const data: WSData = JSON.parse(message)
 
       this.LOGGER.log('data: ', JSON.stringify(data, null, 2), 'ws.on message')
-
-      if (done) {
-        done(null, data)
-      }
 
       if (done && (data.event === command.params.event || data.event === eventHandle)) {
         this.LOGGER.log('if correct event', JSON.stringify(data, null, 2), 'ws.on message')
@@ -388,21 +375,21 @@ class Samsung {
 
       if (data.event !== 'ms.channel.connect') {
         this.LOGGER.log('if not correct event', JSON.stringify(data, null, 2), 'ws.on message')
-        // this.ws.close()
+        ws.close()
       }
 
       // TODO, additional check on available instead of ws.open
       // if(data.event == "ms.channel.connect") { _sendCMD() }
     })
 
-    this.ws.on('response', (response: WebSocket.Data) => {
+    ws.on('response', (response: WebSocket.Data) => {
       this.LOGGER.log('response', response, 'ws.on response')
     })
 
-    this.ws.on('error', (err: Error & { code: string }) => {
+    ws.on('error', (err: Error & { code: string }) => {
       let errorMsg = ''
       if (err.code === 'EHOSTUNREACH' || err.code === 'ECONNREFUSED') {
-        errorMsg = 'TV is off or unavalible'
+        errorMsg = 'TV is off or unavailable'
       }
       console.error(errorMsg)
       this.LOGGER.error(errorMsg, err, 'ws.on error')
@@ -410,33 +397,8 @@ class Samsung {
         done(err, null)
       }
     })
-
-    this.ws.on('close', () => {
-      this.wsClearTimeout()
-      this.ws = null
-    })
   }
 
-  private wsKeepAlive() {
-    this.LOGGER.log('wsKeepAlive', {})
-    this.wsClearTimeout()
-    this.wsTimeout = setTimeout(() => this.wsClose(), 60 * 1000)
-  }
-
-  private wsClearTimeout() {
-    this.LOGGER.log('wsClearTimeout', {})
-    if (this.wsTimeout) {
-      clearTimeout(this.wsTimeout)
-      this.wsTimeout = null
-    }
-  }
-
-  private wsClose() {
-    this.LOGGER.log('wsClose', {})
-    if (this.ws) {
-      this.ws.close()
-    }
-  }
 
   private _sendPromise(command: Command, eventHandle?: string): Promise<WSData | null> {
     return new Promise((resolve, reject) => {
@@ -565,6 +527,27 @@ class Samsung {
       console.log('File error!')
       this.LOGGER.error('catch fil esave', err, '_saveTokenToFile')
     }
+  }
+
+  private _getTokenFromFile(): string | null {
+    try {
+      fs.accessSync(this.TOKEN_FILE, fs.constants.F_OK)
+      console.log('File suss!')
+      const fileData = fs.readFileSync(this.TOKEN_FILE)
+      return fileData.toString()
+    } catch (err) {
+      console.log('File error!')
+      this.LOGGER.error('if (this.SAVE_TOKEN)', err, 'constructor')
+      return null
+    }
+  }
+
+  private _getWSUrl() {
+    return `${this.PORT === 8001 ? 'ws' : 'wss'}://${this.IP}:${
+      this.PORT
+    }/api/v2/channels/samsung.remote.control?name=${this.NAME_APP}${
+      this.TOKEN !== '' ? `&token=${this.TOKEN}` : ''
+    }`
   }
 }
 

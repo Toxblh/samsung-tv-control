@@ -5,11 +5,9 @@ _Tested with Samsung UE43NU7400 and UN55NU7100_
 [![Build Status](https://travis-ci.org/Toxblh/samsung-tv-control.svg?branch=master)](https://travis-ci.org/Toxblh/samsung-tv-control)
 [![codecov](https://codecov.io/gh/Toxblh/samsung-tv-control/branch/master/graph/badge.svg)](https://codecov.io/gh/Toxblh/samsung-tv-control)
 [![Latest Stable Version](https://img.shields.io/npm/v/samsung-tv-control.svg)](https://www.npmjs.com/package/samsung-tv-control)
-[![Dependency Status](https://david-dm.org/Toxblh/samsung-tv-control.svg)](https://david-dm.org/Toxblh/samsung-tv-control)
-[![devDependency Status](https://david-dm.org/Toxblh/samsung-tv-control/dev-status.svg)](https://david-dm.org/Toxblh/samsung-tv-control#info=devDependencies)
 [![Downloads total](https://img.shields.io/npm/dt/samsung-tv-control.svg)](https://www.npmjs.com/package/samsung-tv-control)
 [![Downloads month](https://img.shields.io/npm/dm/samsung-tv-control.svg)](https://www.npmjs.com/package/samsung-tv-control)
-[![License](https://img.shields.io/npm/l/samsung-tv-control.svg)](https://www.npmjs.com/package/samsung-tv-control) [![Paypal Donate](https://img.shields.io/badge/paypal-donate-blue.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=WUAAG2HH58WE4) [![Patreon](https://img.shields.io/badge/patreon-support-blue.svg)](https://www.patreon.com/toxblh)
+[![License](https://img.shields.io/github/license/Toxblh/samsung-tv-control)](https://www.npmjs.com/package/samsung-tv-control) [![Paypal Donate](https://img.shields.io/badge/paypal-donate-blue.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=WUAAG2HH58WE4) [![Patreon](https://img.shields.io/badge/patreon-support-blue.svg)](https://www.patreon.com/toxblh)
 
 ## [📖 Documentation](https://toxblh.github.io/samsung-tv-control/)
 
@@ -36,7 +34,7 @@ const config = {
   debug: true, // Default: false
   ip: '192.168.1.2',
   mac: '123456789ABC',
-  name: 'NodeJS-Test', // Default: NodeJS
+  nameApp: 'NodeJS-Test', // Default: NodeJS
   port: 8001, // Default: 8002
   token: '12345678',
 }
@@ -67,6 +65,16 @@ control
         console.log('# Response getAppsFromTV', res)
       }
     })
+
+    // Get app icon by iconPath which you can get from getAppsFromTV
+    control.getAppIcon(
+      `/opt/share/webappservice/apps_icon/FirstScreen/${APPS.YouTube}/250x250.png`,
+      (err, res) => {
+        if (!err) {
+          console.log('# Response getAppIcon', res)
+        }
+      }
+    )
 
     // Open app by appId which you can get from getAppsFromTV
     control.openApp(APPS.YouTube, (err, res) => {

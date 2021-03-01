@@ -51,6 +51,19 @@ export function getMsgInstalledApp() {
   }
 }
 
+export function getMsgAppIcon(iconPath: string) {
+  return {
+    method: 'ms.channel.emit',
+    params: {
+      data: {
+        iconPath
+      },
+      event: 'ed.apps.icon',
+      to: 'host'
+    }
+  }
+}
+
 export function getMsgLaunchApp(app: App) {
   return {
     method: 'ms.channel.emit',

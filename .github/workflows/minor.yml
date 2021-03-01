@@ -1,0 +1,19 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Minor Version
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install Deps
+        run: yarn
+
+      - name: Minor
+        run: yarn minor
