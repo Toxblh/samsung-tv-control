@@ -19,8 +19,7 @@ steps:
     - node -v
     - npm -v
     - yarn --version
-    - yarn config set cache-folder .yarn-cache
-    - yarn install --pure-lockfile
+    - yarn install
 
 - name: testing
   image: node:lts
