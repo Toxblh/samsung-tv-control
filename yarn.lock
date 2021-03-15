@@ -3751,10 +3751,10 @@ type-coverage-core@^2.16.3:
     tslib "1 || 2"
     tsutils "3"
 
-type-coverage@^2.16.3:
-  version "2.16.3"
-  resolved "https://registry.yarnpkg.com/type-coverage/-/type-coverage-2.16.3.tgz#410ea60ad6982dc4078a36e7373456f0935ecca6"
-  integrity sha512-sRT+bWDWqh4FD0tQBvGAedNIteRYC+qLL51nfCEcyAwfIrTR0hm50YoP48Ri2zVFyJwmAQF92Smu4ody2k36sw==
+type-coverage@^2.17.0:
+  version "2.17.0"
+  resolved "https://registry.yarnpkg.com/type-coverage/-/type-coverage-2.17.0.tgz#233fc75578c9b670e64de1ae26c8b9a14e14b760"
+  integrity sha512-MlM2gmsQZClsNZhZ+blOflCDhVBoyXSYnQptF4Lr8QZxLCqImCNCAi2oofK8pQDmB6rALokokqyzg69PNY7axA==
   dependencies:
     minimist "1"
     type-coverage-core "^2.16.3"
@@ -3786,10 +3786,10 @@ typedoc-default-themes@^0.12.9:
   resolved "https://registry.yarnpkg.com/typedoc-default-themes/-/typedoc-default-themes-0.12.9.tgz#97dfecb74faca36f8aff81d3be984b095d2bbbd8"
   integrity sha512-Jd5fYTiqzinZdoIY382W7tQXTwAzWRdg8KbHfaxmb78m1/3jL9riXtk23oBOKwhi8GFVykCOdPzEJKY87/D0LQ==
 
-typedoc@^0.20.31:
-  version "0.20.31"
-  resolved "https://registry.yarnpkg.com/typedoc/-/typedoc-0.20.31.tgz#4439cc637d31497c7696f46b1e52ac7ac3ee8ade"
-  integrity sha512-36ADb6bdzmnGde6H3dlyMmof0y0ryRvSOhYh96bJHcYdJKipf5Ir4uduj+mZfshd8ktCGlLg48LfNTAE9PpIrQ==
+typedoc@^0.20.32:
+  version "0.20.32"
+  resolved "https://registry.yarnpkg.com/typedoc/-/typedoc-0.20.32.tgz#d06fc4cce12dca66797220bbd289bac9f4481b5b"
+  integrity sha512-GSopd/tiqoKE3fEdvhoaEpR9yrEPsR9tknAjkoeSPL6p1Rq5aVsKxBhhF6cwoDJ7oWjpvnm8vs0rQN0BxEHuWQ==
   dependencies:
     colors "^1.4.0"
     fs-extra "^9.1.0"
