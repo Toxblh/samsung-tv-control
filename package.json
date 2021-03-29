@@ -13,7 +13,7 @@
     "test": "jest",
     "posttest": "rm log-*",
     "coverage": "jest --coverage",
-    "typedoc": "typedoc",
+    "typedoc": "typedoc --outDir ./docs",
     "typecover": "type-coverage --detail --ignore-catch",
     "posttypedoc": "touch ./docs/.nojekyll",
     "patch": "npm version patch && git push --follow-tags",
