@@ -41,7 +41,7 @@
   "dependencies": {
     "node-ssdp": "^4.0.1",
     "request": "^2.88.2",
-    "type-coverage": "^2.17.2",
+    "type-coverage": "^2.17.3",
     "wake_on_lan": "^1.0.0",
     "ws": "^7.4.5"
   },
