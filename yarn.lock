@@ -790,10 +790,10 @@
     jest-diff "^26.0.0"
     pretty-format "^26.0.0"
 
-"@types/node-ssdp@^3.3.1":
-  version "3.3.1"
-  resolved "https://registry.yarnpkg.com/@types/node-ssdp/-/node-ssdp-3.3.1.tgz#425dc7c0152d5e598e59babfc779ba7cb157aff9"
-  integrity sha512-mn4ZOdKM/pgAKl7K50g97/2UnwLyQxuSweM4+1JUaUS7n2LnVHTFDJx8xk0NVyBXPYjWxhidCa5YC96k1XLcsA==
+"@types/node-ssdp@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@types/node-ssdp/-/node-ssdp-4.0.0.tgz#d63d92df505953e02426e1774cb27d2bf6b7e684"
+  integrity sha512-XIyUk6vHyqgm11NUz2AQjaLHSd6dVfEU2H45RqJbIpTjt4RIjPFZ2Q+xfJLO3GQs5i46jb2m35uXitw+/4gm3g==
   dependencies:
     "@types/node" "*"
 
@@ -802,10 +802,10 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-13.1.8.tgz#1d590429fe8187a02707720ecf38a6fe46ce294b"
   integrity sha512-6XzyyNM9EKQW4HKuzbo/CkOIjn/evtCmsU+MUM1xDfJ+3/rNjBttM1NgN7AOQvN6tP1Sl1D1PIKMreTArnxM9A==
 
-"@types/node@^15.9.0":
-  version "15.9.0"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-15.9.0.tgz#0b7f6c33ca5618fe329a9d832b478b4964d325a8"
-  integrity sha512-AR1Vq1Ei1GaA5FjKL5PBqblTZsL5M+monvGSZwe6sSIdGiuu7Xr/pNwWJY+0ZQuN8AapD/XMB5IzBAyYRFbocA==
+"@types/node@^15.12.0":
+  version "15.12.0"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-15.12.0.tgz#6a459d261450a300e6865faeddb5af01c3389bb3"
+  integrity sha512-+aHJvoCsVhO2ZCuT4o5JtcPrCPyDE3+1nvbDprYes+pPkEsbjH7AGUCNtjMOXS0fqH14t+B7yLzaqSz92FPWyw==
 
 "@types/prettier@^2.1.5":
   version "2.2.3"
