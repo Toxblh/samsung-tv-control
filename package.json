@@ -47,7 +47,7 @@
   },
   "devDependencies": {
     "@types/jest": "^26.0.23",
-    "@types/node": "^15.12.2",
+    "@types/node": "^15.12.3",
     "@types/node-ssdp": "^4.0.0",
     "@types/request": "^2.48.5",
     "@types/wake_on_lan": "0.0.28",
@@ -55,8 +55,8 @@
     "jest": "^27.0.4",
     "ts-jest": "^27.0.3",
     "tslint": "^6.1.3",
-    "typedoc": "^0.20.37",
-    "typescript": "^4.3.3"
+    "typedoc": "^0.21.0",
+    "typescript": "^4.3.4"
   },
   "jest": {
     "transform": {
