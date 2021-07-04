@@ -43,7 +43,7 @@
     "request": "^2.88.2",
     "type-coverage": "^2.18.0",
     "wake_on_lan": "^1.0.0",
-    "ws": "^7.5.1"
+    "ws": "^7.5.2"
   },
   "devDependencies": {
     "@types/jest": "^26.0.23",
