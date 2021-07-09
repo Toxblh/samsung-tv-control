@@ -790,10 +790,10 @@
     jest-diff "^26.0.0"
     pretty-format "^26.0.0"
 
-"@types/node-ssdp@^4.0.0":
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/@types/node-ssdp/-/node-ssdp-4.0.0.tgz#d63d92df505953e02426e1774cb27d2bf6b7e684"
-  integrity sha512-XIyUk6vHyqgm11NUz2AQjaLHSd6dVfEU2H45RqJbIpTjt4RIjPFZ2Q+xfJLO3GQs5i46jb2m35uXitw+/4gm3g==
+"@types/node-ssdp@^4.0.1":
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/@types/node-ssdp/-/node-ssdp-4.0.1.tgz#63714d514ee649d6eaeccd7895ff67bf3f4d8894"
+  integrity sha512-w8NEmUjsAG/lKqUY3NOSMsfHz7orFblujp+LeiyxvFHDCEAKxnBTVsLqLLZShvwVQ0/jN5VwCgFGIGo61lirZQ==
   dependencies:
     "@types/node" "*"
 
@@ -802,10 +802,10 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-13.1.8.tgz#1d590429fe8187a02707720ecf38a6fe46ce294b"
   integrity sha512-6XzyyNM9EKQW4HKuzbo/CkOIjn/evtCmsU+MUM1xDfJ+3/rNjBttM1NgN7AOQvN6tP1Sl1D1PIKMreTArnxM9A==
 
-"@types/node@^16.0.1":
-  version "16.0.1"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-16.0.1.tgz#70cedfda26af7a2ca073fdcc9beb2fff4aa693f8"
-  integrity sha512-hBOx4SUlEPKwRi6PrXuTGw1z6lz0fjsibcWCM378YxsSu/6+C30L6CR49zIBKHiwNWCYIcOLjg4OHKZaFeLAug==
+"@types/node@^16.3.0":
+  version "16.3.0"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-16.3.0.tgz#1836664e4fad13b51b07eb6e882a53925e6543c4"
+  integrity sha512-OydMCocGMGqw/1BnWbhtK+AtwyWTOigtrQlRe57OQmTNcI3HKlVI5FGlh+c4mSqInMPLynFrTlYjfajPu9O/eQ==
 
 "@types/prettier@^2.1.5":
   version "2.2.3"
@@ -832,10 +832,10 @@
   resolved "https://registry.yarnpkg.com/@types/tough-cookie/-/tough-cookie-2.3.6.tgz#c880579e087d7a0db13777ff8af689f4ffc7b0d5"
   integrity sha512-wHNBMnkoEBiRAd3s8KTKwIuO9biFtTf0LehITzBhSco+HQI0xkXZbLOD55SW3Aqw3oUkHstkm5SPv58yaAdFPQ==
 
-"@types/wake_on_lan@0.0.29":
-  version "0.0.29"
-  resolved "https://registry.yarnpkg.com/@types/wake_on_lan/-/wake_on_lan-0.0.29.tgz#6405e706bc67d2e08b27b62695bdc51db442cff7"
-  integrity sha512-oE7A4GZSpVUr7FkqYNb1UWK90JTV3ue95K0Eesnd42y1RVlyU9TUfl9QbgvX4XB7SUrnJggIiErQjTGvPwD/Pw==
+"@types/wake_on_lan@0.0.30":
+  version "0.0.30"
+  resolved "https://registry.yarnpkg.com/@types/wake_on_lan/-/wake_on_lan-0.0.30.tgz#2f5415b9ef37753de542ed6014dc8a0e8d19abbe"
+  integrity sha512-r6Ia5Ej3F61Zaq2oiap4syDsl1KTfsKVqJKkuMuEIxaVBHnZ9P98IFmcUGA+GiFvXZ+ETCEp/tKhKxmwsOnxig==
   dependencies:
     "@types/node" "*"
 
