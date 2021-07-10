@@ -43,11 +43,11 @@
     "request": "^2.88.2",
     "type-coverage": "^2.18.0",
     "wake_on_lan": "^1.0.0",
-    "ws": "^7.5.2"
+    "ws": "^7.5.3"
   },
   "devDependencies": {
     "@types/jest": "^26.0.24",
-    "@types/node": "^16.3.0",
+    "@types/node": "^16.3.1",
     "@types/node-ssdp": "^4.0.1",
     "@types/request": "^2.48.6",
     "@types/wake_on_lan": "0.0.30",
