@@ -10,9 +10,9 @@
   "scripts": {
     "prepare": "npm run build",
     "build": "tsc",
-    "test": "jest",
+    "test": "jest --silent",
     "posttest": "rm log-*",
-    "coverage": "jest --coverage",
+    "coverage": "jest --coverage --silent",
     "typedoc": "typedoc --out ./docs ./src",
     "typecover": "type-coverage --detail --ignore-catch",
     "posttypedoc": "touch ./docs/.nojekyll",
@@ -69,6 +69,6 @@
     "testRegex": "^.+\\.spec\\.ts$"
   },
   "typeCoverage": {
-    "atLeast": 90
+    "atLeast": 70
   }
 }

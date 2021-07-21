@@ -11,61 +11,61 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@master
+      - name: Checkout repository
+        uses: actions/checkout@master
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v1
-      with:
-        node-version: 12.x
+      - name: Set up Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
 
-# PreInstall
-    - name: add gulp, codecov
-      run: npm install -g gulp-cli codecov
+      # PreInstall
+      - name: add gulp, codecov
+        run: npm install -g gulp-cli codecov
 
-# Install, Build and Test
-    - name: yarn install, build and test
-      run: |
-        yarn --frozen-lockfile
-        yarn test -- --colors --forceExit
-      env:
-        CI: true
+      # Install, Build and Test
+      - name: yarn install, build and test
+        run: |
+          yarn --frozen-lockfile
+          yarn test -- --colors --forceExit
+        env:
+          CI: true
 
-# NPM Publish
-    - name: Publish to npm
-      run: |
-        npm config set //registry.npmjs.org/:_authToken=$NODE_AUTH_TOKEN
-        npm publish
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+      # NPM Publish
+      - name: Publish to npm
+        run: |
+          npm config set //registry.npmjs.org/:_authToken=$NODE_AUTH_TOKEN
+          npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
 
-# Coverage
-    - name: Coverage
-      run: yarn coverage
+      # Coverage
+      - name: Coverage
+        run: yarn coverage
 
-    - name: Publish codecov
-      run: codecov -f coverage/*.json
+      - name: Publish codecov
+        run: codecov -f coverage/*.json
 
-# TypeDoc
-    - name: Generate TypeDoc
-      run: yarn typedoc
+      # TypeDoc
+      - name: Generate TypeDoc
+        run: yarn typedoc
 
-    - name: Publish generated content to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v2
-      env:
-        ACTIONS_DEPLOY_KEY: ${{ secrets.ACTIONS_DEPLOY_KEY }}
-        PUBLISH_BRANCH: gh-pages
-        PUBLISH_DIR: ./dist
-      with:
-        keepFiles: true
+      - name: Publish generated content to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v2
+        env:
+          ACTIONS_DEPLOY_KEY: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+          PUBLISH_BRANCH: gh-pages
+          PUBLISH_DIR: ./docs
+        with:
+          keepFiles: true
 
-# GitHub Release
-    - name: Package lib
-      run: npm pack
+      # GitHub Release
+      - name: Package lib
+        run: npm pack
 
-    - name: GitHub Release
-      uses: "marvinpinto/action-automatic-releases@latest"
-      with:
-        repo_token: "${{ secrets.GITHUB_TOKEN }}"
-        prerelease: false
-        files: samsung-tv-control-*.tgz
+      - name: GitHub Release
+        uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          prerelease: false
+          files: samsung-tv-control-*.tgz

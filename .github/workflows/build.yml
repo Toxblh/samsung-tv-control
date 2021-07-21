@@ -8,24 +8,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v1
+      - name: Checkout repository
+        uses: actions/checkout@v1
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v1
-      with:
-        node-version: 12.x
+      - name: Set up Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
 
-# PreInstall
-    - name: add gulp, codecov
-      run: npm install -g gulp-cli codecov
+      # PreInstall
+      - name: add gulp, codecov
+        run: npm install -g gulp-cli codecov
 
-    - name: yarn install, build and test
-      run: |
-        yarn --frozen-lockfile
-        yarn test -- --colors --forceExit
-        yarn coverage
-        codecov -f coverage/*.json -t ${{ secrets.CODE_COV }}
-      env:
-        CI: true
-
+      - name: yarn install, build and test
+        run: |
+          yarn --frozen-lockfile
+          yarn test -- --colors --forceExit
+          yarn coverage
+          codecov -f coverage/*.json -t ${{ secrets.CODE_COV }}
+        env:
+          CI: true
