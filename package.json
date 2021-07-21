@@ -13,7 +13,7 @@
     "test": "jest",
     "posttest": "rm log-*",
     "coverage": "jest --coverage",
-    "typedoc": "typedoc --outDir ./docs",
+    "typedoc": "typedoc --out ./docs ./src",
     "typecover": "type-coverage --detail --ignore-catch",
     "posttypedoc": "touch ./docs/.nojekyll",
     "patch": "npm version patch && git push --follow-tags",
@@ -53,7 +53,7 @@
     "@types/wake_on_lan": "0.0.30",
     "@types/ws": "^7.4.7",
     "jest": "^27.0.6",
-    "ts-jest": "^27.0.3",
+    "ts-jest": "^27.0.4",
     "tslint": "^6.1.3",
     "typedoc": "^0.21.4",
     "typescript": "^4.3.5"
