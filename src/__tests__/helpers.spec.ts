@@ -1,4 +1,12 @@
-import { chr, base64, getVideoId, getMsgInstalledApp, getCommandByKey, getMsgLaunchApp, getSendTextCommand } from '../helpers'
+import {
+  chr,
+  base64,
+  getVideoId,
+  getMsgInstalledApp,
+  getCommandByKey,
+  getMsgLaunchApp,
+  getSendTextCommand,
+} from '../helpers'
 import { KEYS } from '../keys'
 
 describe('helpers', () => {
@@ -24,8 +32,8 @@ describe('helpers', () => {
       params: {
         data: '',
         event: 'ed.installedApp.get',
-        to: 'host'
-      }
+        to: 'host',
+      },
     })
   })
 
@@ -36,8 +44,8 @@ describe('helpers', () => {
         Cmd: 'Click',
         DataOfCmd: KEYS.KEY_0,
         Option: 'false',
-        TypeOfRemote: 'SendRemoteKey'
-      }
+        TypeOfRemote: 'SendRemoteKey',
+      },
     })
   })
 
@@ -45,10 +53,10 @@ describe('helpers', () => {
     expect(getSendTextCommand('Text to be inserted')).toEqual({
       method: 'ms.remote.control',
       params: {
-          Cmd: 'VGV4dCB0byBiZSBpbnNlcnRlZA==',// base64 representation of "Text to be inserted"
-          DataOfCmd: 'base64',
-          TypeOfRemote: 'SendInputString'
-      }
+        Cmd: 'VGV4dCB0byBiZSBpbnNlcnRlZA==', // base64 representation of "Text to be inserted"
+        DataOfCmd: 'base64',
+        TypeOfRemote: 'SendInputString',
+      },
     })
   })
 
@@ -59,18 +67,18 @@ describe('helpers', () => {
         app_type: 1,
         icon: 'icon',
         is_lock: 0,
-        name: 'name'
-      })
+        name: 'name',
+      }),
     ).toEqual({
       method: 'ms.channel.emit',
       params: {
         data: {
           action_type: 'NATIVE_LAUNCH',
-          appId: '123'
+          appId: '123',
         },
         event: 'ed.apps.launch',
-        to: 'host'
-      }
+        to: 'host',
+      },
     })
   })
 
@@ -81,18 +89,18 @@ describe('helpers', () => {
         app_type: 2,
         icon: 'icon',
         is_lock: 0,
-        name: 'name'
-      })
+        name: 'name',
+      }),
     ).toEqual({
       method: 'ms.channel.emit',
       params: {
         data: {
           action_type: 'DEEP_LINK',
-          appId: '123'
+          appId: '123',
         },
         event: 'ed.apps.launch',
-        to: 'host'
-      }
+        to: 'host',
+      },
     })
   })
 })

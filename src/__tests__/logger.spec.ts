@@ -28,5 +28,4 @@ describe('Logger', () => {
 
     expect(logger.saveLogToFile()).toBeUndefined()
   })
-
 })

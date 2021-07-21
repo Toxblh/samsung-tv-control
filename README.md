@@ -11,7 +11,6 @@ _Tested with Samsung UE43NU7400 and UN55NU7100_
 
 ## [📖 Documentation](https://toxblh.github.io/samsung-tv-control/)
 
-
 ## Installation
 
 Requires Node v9 or above.
@@ -46,12 +45,12 @@ control
   .isAvailable()
   .then(() => {
     // Get token for API
-    control.getToken(token => {
+    control.getToken((token) => {
       console.info('# Response getToken:', token)
     })
 
     // Send key to TV
-    control.sendKey(KEYS.KEY_HOME, function(err, res) {
+    control.sendKey(KEYS.KEY_HOME, function (err, res) {
       if (err) {
         throw new Error(err)
       } else {
@@ -73,7 +72,7 @@ control
         if (!err) {
           console.log('# Response getAppIcon', res)
         }
-      }
+      },
     )
 
     // Open app by appId which you can get from getAppsFromTV
@@ -87,7 +86,7 @@ control
     // If you would like to close it immediately, you can use `closeConnection()`
     control.closeConnection()
   })
-  .catch(e => console.error(e))
+  .catch((e) => console.error(e))
 ```
 
 ## Commands List

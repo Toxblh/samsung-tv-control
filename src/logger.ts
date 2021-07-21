@@ -14,7 +14,7 @@ interface LogMessage {
 
 enum TypeLog {
   ERROR = 'ERROR',
-  LOG = 'LOG'
+  LOG = 'LOG',
 }
 
 class Logger {
@@ -41,7 +41,7 @@ class Logger {
       console.error('ERROR: Failed to write log file!', err)
       console.error('LOG File will be output in console!')
       console.info('----- LOG ------')
-      this.LogFile.forEach(item => console.info(this._printLog(item)))
+      this.LogFile.forEach((item) => console.info(this._printLog(item)))
       console.info('-- END OF LOG --')
     })
 
@@ -49,7 +49,7 @@ class Logger {
       console.log(`Wrote log to file "${nameOfFile}"`)
     })
 
-    this.LogFile.forEach(item => {
+    this.LogFile.forEach((item) => {
       file.write(this._printLog(item) + '\n')
     })
 
@@ -82,7 +82,7 @@ class Logger {
       logData,
       message,
       time: new Date().toISOString(),
-      type
+      type,
     })
 
     if (funcName) {

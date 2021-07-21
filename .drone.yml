@@ -3,48 +3,48 @@ type: docker
 name: build
 
 steps:
-- name: restore-cache
-  image: drillster/drone-volume-cache
-  volumes:
-  - name: cache
-    path: /cache
-  settings:
-    restore: true
-    mount:
-      - ./node_modules
+  - name: restore-cache
+    image: drillster/drone-volume-cache
+    volumes:
+      - name: cache
+        path: /cache
+    settings:
+      restore: true
+      mount:
+        - ./node_modules
 
-- name: install
-  image: node:lts
-  commands:
-    - node -v
-    - npm -v
-    - yarn --version
-    - yarn install
+  - name: install
+    image: node:lts
+    commands:
+      - node -v
+      - npm -v
+      - yarn --version
+      - yarn install
 
-- name: testing
-  image: node:lts
-  commands:
-    - yarn test -- --colors --forceExit
+  - name: testing
+    image: node:lts
+    commands:
+      - yarn test -- --colors --forceExit
 
-- name: coverage
-  image: node:lts
-  commands:
-    - yarn coverage
+  - name: coverage
+    image: node:lts
+    commands:
+      - yarn coverage
 
-- name: build
-  image: node:lts
-  commands:
-    - yarn build
+  - name: build
+    image: node:lts
+    commands:
+      - yarn build
 
-- name: rebuild-cache
-  image: drillster/drone-volume-cache
-  volumes:
-  - name: cache
-    path: /cache
-  settings:
-    rebuild: true
-    mount:
-      - ./node_modules
+  - name: rebuild-cache
+    image: drillster/drone-volume-cache
+    volumes:
+      - name: cache
+        path: /cache
+    settings:
+      rebuild: true
+      mount:
+        - ./node_modules
 
 volumes:
   - name: cache

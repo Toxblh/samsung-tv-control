@@ -71,7 +71,7 @@ class Samsung {
         TOKEN: this.TOKEN,
         WS_URL: this.WS_URL,
       },
-      'constructor'
+      'constructor',
     )
   }
 
@@ -120,7 +120,7 @@ class Samsung {
       })
     })
   }
-  
+
   public setToken(token: string) {
     this.TOKEN = token
     this.WS_URL = this._getWSUrl()
@@ -128,7 +128,7 @@ class Samsung {
 
   public sendKey(
     key: KEYS,
-    done?: (err: Error | { code: string } | null, res: WSData | string | null) => void
+    done?: (err: Error | { code: string } | null, res: WSData | string | null) => void,
   ) {
     this.LOGGER.log('send key', key, 'sendKey')
     if (this.PORT === 55000) {
@@ -149,7 +149,7 @@ class Samsung {
 
   public sendText(
     text: string,
-    done?: (err: Error | { code: string } | null, res: WSData | string | null) => void
+    done?: (err: Error | { code: string } | null, res: WSData | string | null) => void,
   ) {
     this.LOGGER.log('send text', text, 'sendText')
     if (this.PORT === 55000) {
@@ -178,7 +178,10 @@ class Samsung {
     return this._sendPromise(getMsgInstalledApp())
   }
 
-  public getAppIcon(iconPath:string, done?: (err: Error | { code: string } | null, res: WSData | string | null) => void) {
+  public getAppIcon(
+    iconPath: string,
+    done?: (err: Error | { code: string } | null, res: WSData | string | null) => void,
+  ) {
     return this._send(getMsgAppIcon(iconPath), done)
   }
 
@@ -189,7 +192,7 @@ class Samsung {
   public openAppByAppIdAndType(
     appId: string,
     type: number,
-    done?: (error: Error | { code: string } | null, result: WSData | null) => void
+    done?: (error: Error | { code: string } | null, result: WSData | null) => void,
   ) {
     this._send(getMsgLaunchApp({ app_type: type, appId, icon: '', is_lock: 0, name: '' }), done)
   }
@@ -208,7 +211,7 @@ class Samsung {
 
   public openApp(
     appId: string,
-    done?: (err: Error | { code: string } | null, res: WSData | string | null) => void
+    done?: (err: Error | { code: string } | null, res: WSData | string | null) => void,
   ) {
     this.getAppsFromTV((err, res) => {
       this.LOGGER.error('getAppsFromTV error', String(err), 'openApp getAppsFromTV')
@@ -268,14 +271,14 @@ class Samsung {
             this.LOGGER.log(
               'Link sent',
               { status: response.statusCode, body: response.body, headers: response.headers },
-              'openYouTubeLink'
+              'openYouTubeLink',
             )
             resolve('Link sent')
           } else {
             this.LOGGER.error('While send a link, somthing went wrong', { err }, 'openYouTubeLink')
             reject(err)
           }
-        }
+        },
       )
     })
   }
@@ -293,14 +296,14 @@ class Samsung {
             this.LOGGER.log(
               'TV is available',
               { request: res.request, body: res.body as string, code: res.statusCode },
-              'isAvailable'
+              'isAvailable',
             )
             resolve(true)
           }
 
           this.LOGGER.error('TV is not available', { err }, 'isAvailable')
           resolve(false)
-        }
+        },
       )
     })
   }
@@ -348,7 +351,7 @@ class Samsung {
   private _send(
     command: Command,
     done?: (err: null | (Error & { code: string }), res: WSData | null) => void,
-    eventHandle?: string
+    eventHandle?: string,
   ) {
     const ws = new WebSocket(this.WS_URL, { rejectUnauthorized: false })
 
@@ -399,7 +402,6 @@ class Samsung {
     })
   }
 
-
   private _sendPromise(command: Command, eventHandle?: string): Promise<WSData | null> {
     return new Promise((resolve, reject) => {
       this._send(
@@ -411,7 +413,7 @@ class Samsung {
             resolve(res)
           }
         },
-        eventHandle
+        eventHandle,
       )
     })
   }

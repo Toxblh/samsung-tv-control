@@ -21,7 +21,7 @@ control
   .isAvailable()
   .then(() => {
     // Get token for API
-    control.getToken(token => {
+    control.getToken((token) => {
       console.info('# Response getToken:', token)
     })
 
@@ -35,14 +35,14 @@ control
     */
 
     // Send key to TV
-    control.sendKey(KEYS.KEY_HOME, function(err, res) {
+    control.sendKey(KEYS.KEY_HOME, function (err, res) {
       if (!err) {
         console.log('# Response sendKey', res)
       }
     })
 
     // Send text to focused input on TV
-    control.sendText('Text to be inserted in some focused input', function(err, res) {
+    control.sendText('Text to be inserted in some focused input', function (err, res) {
       if (!err) {
         console.log('# Response sendText', res)
       }
@@ -62,7 +62,7 @@ control
         if (!err) {
           console.log('# Response getAppIcon', res)
         }
-      }
+      },
     )
 
     // Open app by appId which you can get from getAppsFromTV
@@ -72,4 +72,4 @@ control
       }
     })
   })
-  .catch(e => console.error(e))
+  .catch((e) => console.error(e))

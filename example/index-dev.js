@@ -10,7 +10,7 @@ const config = {
   ip: '192.168.1.2',
   mac: '123456789ABC',
   nameApp: 'NodeJS-Test', // Default: NodeJS
-  saveToken: true
+  saveToken: true,
 }
 
 const control = new Samsung(config)

@@ -24,8 +24,8 @@ export function getCommandByKey(key: KEYS): Command {
       Cmd: 'Click',
       DataOfCmd: key,
       Option: 'false',
-      TypeOfRemote: 'SendRemoteKey'
-    }
+      TypeOfRemote: 'SendRemoteKey',
+    },
   }
 }
 
@@ -33,10 +33,10 @@ export function getSendTextCommand(text: any) {
   return {
     method: 'ms.remote.control',
     params: {
-        Cmd: base64(text),
-        DataOfCmd: 'base64',
-        TypeOfRemote: 'SendInputString'
-    }
+      Cmd: base64(text),
+      DataOfCmd: 'base64',
+      TypeOfRemote: 'SendInputString',
+    },
   }
 }
 
@@ -46,8 +46,8 @@ export function getMsgInstalledApp() {
     params: {
       data: '',
       event: 'ed.installedApp.get',
-      to: 'host'
-    }
+      to: 'host',
+    },
   }
 }
 
@@ -56,11 +56,11 @@ export function getMsgAppIcon(iconPath: string) {
     method: 'ms.channel.emit',
     params: {
       data: {
-        iconPath
+        iconPath,
       },
       event: 'ed.apps.icon',
-      to: 'host'
-    }
+      to: 'host',
+    },
   }
 }
 
@@ -70,10 +70,10 @@ export function getMsgLaunchApp(app: App) {
     params: {
       data: {
         action_type: app.app_type === 2 ? 'DEEP_LINK' : 'NATIVE_LAUNCH',
-        appId: app.appId
+        appId: app.appId,
       },
       event: 'ed.apps.launch',
-      to: 'host'
-    }
+      to: 'host',
+    },
   }
 }

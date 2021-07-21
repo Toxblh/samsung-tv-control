@@ -85,7 +85,7 @@ class AutoSearch {
         ip: data.device.ip,
         model: data.device.modelName,
         name: data.device.name,
-        wifiMac: data.device.wifiMac
+        wifiMac: data.device.wifiMac,
       })
     })
   }
