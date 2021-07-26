@@ -13,6 +13,7 @@ jobs:
       - name: Update dependencies
         run: |
           npx -p npm-check-updates ncu -u
+          yarn
           yarn upgrade
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
