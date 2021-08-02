@@ -1,5 +1,6 @@
 name: Update Dependencies
 on:
+  workflow_dispatch:
   schedule:
     - cron: "0 10 * * *"
 jobs:
@@ -13,6 +14,7 @@ jobs:
       - name: Update dependencies
         run: |
           npx -p npm-check-updates ncu -u
+          yarn
           yarn upgrade
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
