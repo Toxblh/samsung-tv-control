@@ -47,7 +47,7 @@
   },
   "devDependencies": {
     "@types/jest": "^26.0.24",
-    "@types/node": "^16.4.12",
+    "@types/node": "^16.4.13",
     "@types/node-ssdp": "^4.0.1",
     "@types/request": "^2.48.7",
     "@types/wake_on_lan": "0.0.30",
