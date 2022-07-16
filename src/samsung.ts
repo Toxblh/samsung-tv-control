@@ -299,10 +299,10 @@ class Samsung {
               'isAvailable',
             )
             resolve(true)
+          } else {
+            this.LOGGER.error('TV is not available', { err }, 'isAvailable')
+            resolve(false)
           }
-
-          this.LOGGER.error('TV is not available', { err }, 'isAvailable')
-          resolve(false)
         },
       )
     })
@@ -527,7 +527,7 @@ class Samsung {
       fs.writeFileSync(this.TOKEN_FILE, token)
     } catch (err) {
       console.log('File error!')
-      this.LOGGER.error('catch fil esave', err, '_saveTokenToFile')
+      this.LOGGER.error('catch fil esave', { err }, '_saveTokenToFile')
     }
   }
 
@@ -539,7 +539,7 @@ class Samsung {
       return fileData.toString()
     } catch (err) {
       console.log('File error!')
-      this.LOGGER.error('if (this.SAVE_TOKEN)', err, 'constructor')
+      this.LOGGER.error('if (this.SAVE_TOKEN)', { err }, 'constructor')
       return null
     }
   }
