@@ -522,9 +522,8 @@ class Samsung {
 
   private _saveTokenToFile(token: string) {
     try {
-      fs.accessSync(this.TOKEN_FILE, fs.constants.F_OK)
-      console.log('File suss!')
       fs.writeFileSync(this.TOKEN_FILE, token)
+      console.log('Token saved!')
     } catch (err) {
       console.log('File error!')
       this.LOGGER.error('catch fil esave', { err }, '_saveTokenToFile')
