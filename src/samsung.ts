@@ -363,6 +363,7 @@ class Samsung {
         setTimeout(() => ws.send(JSON.stringify(command)), 1000)
       } else {
         ws.send(JSON.stringify(command))
+        setTimeout(() => ws.close(), 250);
       }
     })
 
