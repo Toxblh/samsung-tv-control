@@ -228,10 +228,12 @@ class Samsung {
 
       if (!app) {
         this.LOGGER.error('This APP is not installed', { appId, app }, 'openApp getAppsFromTV')
-        throw new Error('This APP is not installed')
+        if (done) {
+          done(new Error('This APP is not installed'), null);
+        }
+      } else {
+        this._send(getMsgLaunchApp(app), done)
       }
-
-      this._send(getMsgLaunchApp(app), done)
     })
   }
 
@@ -545,11 +547,9 @@ class Samsung {
   }
 
   private _getWSUrl() {
-    return `${this.PORT === 8001 ? 'ws' : 'wss'}://${this.IP}:${
-      this.PORT
-    }/api/v2/channels/samsung.remote.control?name=${this.NAME_APP}${
-      this.TOKEN !== '' ? `&token=${this.TOKEN}` : ''
-    }`
+    return `${this.PORT === 8001 ? 'ws' : 'wss'}://${this.IP}:${this.PORT
+      }/api/v2/channels/samsung.remote.control?name=${this.NAME_APP}${this.TOKEN !== '' ? `&token=${this.TOKEN}` : ''
+      }`
   }
 }
 
